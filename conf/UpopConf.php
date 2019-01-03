@@ -1,43 +1,53 @@
 <?php
 namespace UnionPay;
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
+
+use Dotenv\Dotenv;   
+
+/*
 $dotenv = new Dotenv\Dotenv(__DIR__);
 
 $dotenv->load();
+*/
 
 /** For version, use the version 5.0.0 if this parameter has not been set.  */
-private $version;
-/** For signMethod, use the method corresponding to 01 if this parameter has not been set.  */
-private encoding;
-private $signMethod;
-private txntype;
-private txnSubType;
-private bizType;
-private accessType;
-private channelType;
-private currencyCode;
-private paytTimeOut;
-    
-/** frontUrl  */
-private $frontUrl;
 
-/** backUrl  */
-private $backUrl;
-private orderID;
-private txnTime;
-private txnAmt;
-private $mechantID;
+
+
 
 class UpopConf{
+	private $version;
+	private $encoding;
+	private $signMethod;
+	private $txntype;
+	private $txnSubType;
+	private $bizType;
+	private $accessType;
+	private $channelType;
+	private $currencyCode;
+	private $paytTimeOut;
+	/** backUrl  */
+	private $backUrl;
+	/** frontUrl  */
+	private $frontUrl;
+
+	private $orderID;
+	private $txnTime;
+	private $txnAmt;
+	private $mechantID;
+	const PURCHASE = 1;
+	const CANCELPURCHASE  = 2;
+	const REFUND  = 3;
+	const PREAUTH = 4;
+	const CANCELPREAUTH=5;
+	const COMPLETEPREAUTH=6;
+	const CANCELCOMPLETEPREAUTH=7;
+	const RECURRING=8;
+
     
-    public function __construct($dataInput){
-        $this->version=getenv('UPOP.VERSION');
+    public function __construct(){
+		$this->version=getenv('UPOP.VERSION');
         $this->encoding=getenv('UPOP.ENCODING');
         $this->signMethod=getenv('UPOP.SIGNMETHOD');
-        $this->txntype=getenv('UPOP.TXNTYPE');
-        $this->txnSubType=getenv('UPOP.TXNSUBTYPE');
         $this->bizType=getenv('UPOP.BIZTYPE');
         $this->accessType=getenv('UPOP.ACCESSTYPE');
         $this->channelType=getenv('UPOP.CHANNELTYPE');
@@ -47,38 +57,29 @@ class UpopConf{
         $this->smsCode=getenv('UPOP.SMSCODE');
         $this->frontUrl=getenv('UPOP.BACKURL');
         $this->backUrl=getenv('UPOP.FRONTURL');
-        $this->orderID=$dataInput->orderID;
-        $this->txnTime=$dataInput->txnTime;
-        $this->txnAmt =$dataInput->txnAmt;
-        
 
 
     }
     
-    public setContentData(){
-        contentData = new array(
+    public function getMandatoryData(){
+        $contentData = array(
             "version"=>$this->version,
             "encoding"=>$this->encoding,
              "signMethod" =>$this->signMethod, 
-            "txnType"=>$this->txntype,
-            "txnSubType"=>$this->txnSubType,
             "bizType"=>$this->bizType,
             "accessType"=>$this->accessType,
             "channelType"=>$this->channelType,
             "mechantID"=>$this->merchantID,
-            "orderID"=$this->orderID,
-            "txnTime"=$this->txnTime,
             "currencyCode"=>$this->currencyCode,
             "payTimeout"=> $this->paytimeout,
             "backurl"=>$this->backURL,
-            "fronturl"=>$this->frontURL,
-            "txnAmt"=>$this->txnAmt
+            "fronturl"=>$this->frontURL
         );
     
         return $contentData;
     }
     
-    public requiredData(){
+    public function getRequiredData(){
         $required_data = [
             'version',
             'encoding',
@@ -86,11 +87,23 @@ class UpopConf{
             'txnType',
             'txnSubType',
             'bizType',
-            'email'
+            'accessType',
+            'channelType',
+            'mechantID',
+            'orderID',
+            'txnTime',
+            'currencyCode',
+            'payTimeout',
+            'backurl',
+            'fronturl',
+            'txnAmt',
+            'type'
         ];
+        return $required_data;
     }
-    public requiredConf(){
-        
+    public function getRequiredUserData(){
+        $required_data=['orderID','txnAmt','txnTime','type'];
+		return $required_data;
     }
 }
 

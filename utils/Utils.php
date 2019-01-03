@@ -1,85 +1,10 @@
 <?php
 namespace UnionPay;
 use Dotenv\Dotenv;   
-private $frontRequestUrl;
-/** Background request URL. */
-private $backRequestUrl;
-/** Single query */
-private $singleQueryUrl;
-/** Batch query */
-private $batchQueryUrl;
-/** Batch transaction */
-private $batchTransUrl;
-/** File transmission */
-private $fileTransUrl;
-/** Path of signed certificate. */
-private $signCertPath;
-/** Password of signed certificate. */
-private $signCertPwd;
-/** Type of signed certificate. */
-private $signCertType;
-/** Path of encrypted public key certificate. */
-private $encryptCertPath;
-/** Authenticate the catalog of signed public key certificates. */
-private $validateCertDir;
-/** Read the catalog of specified signed certificates according to client codes. */
-private $signCertDir;
-/** Path of encrypted certificates for magnetic tracks. */
-private $encryptTrackCertPath;
-/** Module of encrypted public keys for magnetic tracks. */
-private $encryptTrackKeyModulus;
-/** Exponent of encrypted public keys for magnetic tracks. */
-private $encryptTrackKeyExponent;
-/** Card transaction. */
-private $cardRequestUrl;
-/** App transaction */
-private $appRequestUrl;
-/** Certificate usage mode (single certificate/multi-certificate) */
-private $singleMode;
-/** Security key (used in calculation of SHA256 and SM3) */
-private $secureKey;
-/** Path of intermediate certificates  */
-private $middleCertPath;
-/** Path of root certificates  */
-private $rootCertPath;
-/** For whether to verify the CNs of the certificates for verifying certificates, all certificates except the ones for which this parameter has been set to false should be authenticated.  */
-private boolean ifValidateCNName = true;
-/** For whether to authenticate the https certificate, all certificates need not to be authenticated by default.  */
-private boolean ifValidateRemoteCert = false;
 
-/*Payment-related addresses*/
-private $jfFrontRequestUrl;
-private $jfBackRequestUrl;
-private $jfSingleQueryUrl;
-private $jfCardRequestUrl;
-private $jfAppRequestUrl;
 
-private $qrcBackTransUrl;
-private $qrcB2cIssBackTransUrl;
-private $qrcB2cMerBackTransUrl;
-
-        $this->frontRequestUrl=getenv('UPOP.FRONTTRANSURL');
-        $this->backRequestUrl=getenv('UPOP.BACKTRANSURL');
-        $this->singleQueryUrl=getenv('UPOP.SINGLEQUERYURL');
-        $this->batchQueryUrl=getenv('UPOP.BATCHTRANSURL');
-        $this->batchTransUrl=getenv('UPOP.FILETRANSURL');
-        $this->fileTransUrl=getenv('UPOP.APPTRANSURL');
-        $this->cardTransUrl=getenv('UPOP.CARDTRANSURL');
-        $this->jfFrontRequestUrl=getenv('UPOP.JFFRONTTRANSURL');
-        $this->jfBackRequestUrl=getenv('UPOP.JFBACKTRANSURL');
-        $this->jfSingleQueryUrl=getenv('UPOP.JFSINGLEQUERYURL');
-        $this->jfCardRequestUrl=getenv('UPOP.JFCARDTRANSURL');
-        $this->jfAppRequestUrl=getenv('UPOP.JFAPPTRANSURL');
-        $this->ifValidateCNName=getenv('UPOP.IFVALIDATECNNAME');
-        $this->ifValidateRemoteCert=getenv('UPOP.IFVALIDATEREMOTECERT');
-        $this->signCertDir=getenv('UPOP.SIGNCERT.PATH');
-        $this->signCertPwd=getenv('UPOP.SIGNCERT.PWD');
-        $this->signCertType=getenv('UPOP.SIGNCERT.TYPE');
-        $this->secureKey=getenv('UPOP.ENCRYPTCERT.PATH');
-        $this->middleCertPath=getenv('UPOP.MIDDLECERT.PATH');
-        $this->rootCertPath=getenv('UPOP.ROOTCERT.PATH');
 final class Utils{
-    public static function validatePhpInput($raw_input, array $required_params){
+    public static function validateRequest($raw_input, array $required_params){
         $res_arr = null;
         $res_obj = null;
         if($raw_input){
@@ -132,7 +57,7 @@ final class Utils{
         file_put_contents($filepath, $logs."\n", FILE_APPEND | LOCK_EX);
     }
     public static function getLogFile(){
-        $dotenv = new Dotenv(__DIR__.'/secure');
+        $dotenv = new Dotenv(__DIR__.'/../');
         $dotenv->load();
         $dirname = getenv('LOGDIR');
 
