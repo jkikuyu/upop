@@ -9,7 +9,9 @@ final class Utils{
         $res_obj = null;
         if($raw_input){
             foreach($required_params as $param){
-                if(!property_exists($raw_input, $param) || empty($raw_input->$param) || !(is_string($raw_input->$param) || is_int($raw_input->$param))){
+				//take not that empty("0") evaluates to a false;
+                if(!property_exists($raw_input, $param) || (empty($raw_input->$param) 
+					&& strlen($raw_input->$param)== 0) || !(is_string($raw_input->$param) || is_int($raw_input->$param))){
                     die($param . ' is required');
                 }
                 else{

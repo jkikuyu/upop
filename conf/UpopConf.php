@@ -3,15 +3,6 @@ namespace UnionPay;
 
 use Dotenv\Dotenv;   
 
-/*
-$dotenv = new Dotenv\Dotenv(__DIR__);
-
-$dotenv->load();
-*/
-
-/** For version, use the version 5.0.0 if this parameter has not been set.  */
-
-
 
 
 class UpopConf{
@@ -24,7 +15,7 @@ class UpopConf{
 	private $accessType;
 	private $channelType;
 	private $currencyCode;
-	private $paytTimeOut;
+	private $payTimeOut;
 	/** backUrl  */
 	private $backUrl;
 	/** frontUrl  */
@@ -51,18 +42,19 @@ class UpopConf{
         $this->bizType=getenv('UPOP.BIZTYPE');
         $this->accessType=getenv('UPOP.ACCESSTYPE');
         $this->channelType=getenv('UPOP.CHANNELTYPE');
-        $this->merchantID=getenv('UPOP.MERCHANTID ');
+        $this->merchantID=getenv('UPOP.MERCHANTID');
         $this->currencyCode=getenv('UPOP.CURRENCYCODE');
-        $this->paytTimeOut=getenv('UPOP.PAYTIMEOUT');
+        $this->payTimeOut=getenv('UPOP.PAYTIMEOUT');
         $this->smsCode=getenv('UPOP.SMSCODE');
         $this->frontUrl=getenv('UPOP.BACKURL');
         $this->backUrl=getenv('UPOP.FRONTURL');
+		$this->certid = getenv('UPOP.CERTID');
 
 
     }
     
-    public function getMandatoryData(){
-        $contentData = array(
+    public function getDefaultContent(){
+        $content = array(
             "version"=>$this->version,
             "encoding"=>$this->encoding,
              "signMethod" =>$this->signMethod, 
@@ -71,15 +63,15 @@ class UpopConf{
             "channelType"=>$this->channelType,
             "mechantID"=>$this->merchantID,
             "currencyCode"=>$this->currencyCode,
-            "payTimeout"=> $this->paytimeout,
-            "backurl"=>$this->backURL,
-            "fronturl"=>$this->frontURL
+            "payTimeout"=> $this->payTimeOut,
+            "backurl"=>$this->frontUrl,
+            "fronturl"=>$this->frontUrl
         );
     
-        return $contentData;
+        return $content;
     }
     
-    public function getRequiredData(){
+    public function getRequiredFlds(){
         $required_data = [
             'version',
             'encoding',
@@ -96,14 +88,13 @@ class UpopConf{
             'payTimeout',
             'backurl',
             'fronturl',
-            'txnAmt',
-            'type'
+            'txnAmt'
         ];
         return $required_data;
     }
-    public function getRequiredUserData(){
-        $required_data=['orderID','txnAmt','txnTime','type'];
-		return $required_data;
+    public function getRequiredUserInputs(){
+        $requiredInputs=['orderID','txnAmt','txnTime','type'];
+		return $requiredInputs;
     }
 }
 

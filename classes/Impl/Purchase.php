@@ -1,5 +1,13 @@
 <?php
+/*
+ * @file    Purchase.php
+ * @author  Jude
+ * @date    02/01/2019
+ * @version $Revision$
+ * @Purpose Class to make purchase request
+ */
 namespace UnionPay;
+
 use Dotenv\Dotenv;   
 use UnionPay\UpopConf;
 
@@ -8,36 +16,52 @@ require_once(dirname(__dir__).'/PaymentReq.php');
 
 
 class Purchase extends PaymentReq implements IPaymentType{
-        public function __construct(){
+	private $txntype;
+	private $txnSubType;
+	public function __construct(){
 
-            $this->txntype=getenv('UPOP.TXNTYPE');
-            $this->txnSubType=getenv('UPOP.TXNSUBTYPE');
-        }
-        
-        public function processRequest($userData){
-			/*
-			* i. create array using received data
-			* ii. get mandatory data
-			* iii. Array merge 
-			* iv. validate merged array
-			*/
-			parent::assignValues($userData);
-			
-            $mandatory = new UpopConf.getMandatoryData();
-			$mergedData = array_merge($mandatory, $mergedData);
-			$requiredData = new UpopConf.getRequiredData();
-			$oData = $mergedData;
-			var_dump($oData);
-			parent::isRequestValid($oData,$requiredData);
-			
-			
-        }
-        public function init(){
-            
-        }
-		public function test(){
-			echo "test";
+		$this->txntype=getenv('UPOP.PUR.TXNTYPE');
+		$this->txnSubType=getenv('UPOP.PUR.TXNSUBTYPE');
+	}
+
+	public function processRequest($merged_data=null, $requiredData=null){
+		/*
+
+		* i.  validate merged array
+		* ii.   get keystore
+		* iii. generate signature
+		*/
+		$oData = (object) $merged_data; //make object for validation 
+		$isValid = parent::isRequestValid($oData,$requiredData);
+
+		if ($isValid){
+			$signature	= parent::getSignature($merged_data);
 		}
+		else{
+			return $isValid;
+		}
+		return $signature;
+
+	}	
+	public function mergeData($defaultContent=null,$userData=null){
+		$type = ["txnType"=>$this->txntype,"txnSubType"=>$this->txnSubType];
+		$merged_data = parent::mergedData($defaultContent,$userData,$type);
+
+		return $merged_data;
+	}
+	public function convertToString($merged_final=null){
+		$strData = parent::convertToString($merged_final);
+		return $strData;
+	}
+	public function initiateRequest($sorted, $url){
+		$html = parent::createHtml($sorted,url);
+		header("Content-Type: text/html; charset=" . $sorted['encoding']);
+		echo $html;
+
+		
+	}
+
+
 }
 
 ?>

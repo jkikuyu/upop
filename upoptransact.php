@@ -1,5 +1,14 @@
 <?php
+/*
+ * @file    upoptransact.php
+ * @author  Jude
+ * @date    27/12/2018
+ * @version $Revision$
+ *
+ */
+
 namespace UnionPay;
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -29,7 +38,8 @@ if ($isRequestJson){
 		$class = null;
 		switch ($json->type){
 			case UpopConf::PURCHASE:
-				$class = 'Purchase';
+				$var = 'Purchase';
+				$url = upopConf->frontUrl;
 				// purchase
 
 				break;
@@ -65,14 +75,21 @@ if ($isRequestJson){
 	else{
 		$log->error("invalid JSON request");
 		new \Exception ("invalid JSON request");
-
-
 	}
-	//also possible __NAMESPACE__ . '\\' . $class . 'Class';
-	$var = __NAMESPACE__ . '\\' . $class;
-	$bar = new $var;
-	$bar->test();
+	//use__NAMESPACE__ . '\\' . $var in variable before instantiating
+	$class = __NAMESPACE__ . '\\' . $var;
+	$classobj = new $class;
+	$defaultContent = upopConf->getDefaultContent();
+	$merged = $classobj->mergeData($defaultContent, $json);
+	$requiredFlds = upopConf->getRequiredFlds();
+	$signature = $classobj->processRequest($merged, $requiredFlds);
+	$certID = $upopconf->certid;
+	$certDetail = ["signature"=>$signature,"certId"=>certID];
+	$merged_final= array_merge($merged,$certDetail);
+	$sorted = ksort($merged_final);
+	$classobj->initiateRequest($sorted,$url);
 }
+
 else{
 	//Utils::logger(array("invalid JSON request"));
 	$log->error("invalid JSON request");
