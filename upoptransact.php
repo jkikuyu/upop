@@ -44,6 +44,9 @@ if ($isRequestJson){
 
 				break;
 			case UpopConf::CANCELPURCHASE:
+				$var = 'PurchaseCancel';
+				$url = upopConf->backTransUrl;
+
 				//purchase Cancel
 				break;
 			case UpopConf::REFUND:

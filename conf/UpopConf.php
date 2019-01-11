@@ -20,6 +20,8 @@ class UpopConf{
 	private $backUrl;
 	/** frontUrl  */
 	private $frontUrl;
+	/** Background request URL. */
+	private $backRequestUrl;
 
 	private $orderID;
 	private $txnTime;
@@ -49,6 +51,7 @@ class UpopConf{
         $this->frontUrl=getenv('UPOP.BACKURL');
         $this->backUrl=getenv('UPOP.FRONTURL');
 		$this->certid = getenv('UPOP.CERTID');
+		$this->backRequestUrl=getenv('UPOP.BACKTRANSURL');
 
 
     }
@@ -64,7 +67,7 @@ class UpopConf{
             "mechantID"=>$this->merchantID,
             "currencyCode"=>$this->currencyCode,
             "payTimeout"=> $this->payTimeOut,
-            "backurl"=>$this->frontUrl,
+            "backurl"=>$this->backUrl,
             "fronturl"=>$this->frontUrl
         );
     

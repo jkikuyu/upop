@@ -50,11 +50,10 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $merged_data;
 	}
 	public function convertToString($merged_final=null){
-		$strData = parent::convertToString($merged_final);
+		$strData = parent::convertToString($merged_final,true);
 		return $strData;
 	}
 	public function initiateRequest($sorted, $url){
-		$html = parent::createHtml($sorted,url);
 		header("Content-Type: text/html; charset=" . $sorted['encoding']);
 		echo $html;
 

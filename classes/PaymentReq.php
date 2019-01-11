@@ -45,11 +45,18 @@ class PaymentReq implements IPaymentReq{
         return $valid;
     }
 
-    public function convertToString($recd=null){
+    public function convertToString($recd=null, boolean urlEncode=false){
         $strData = null;
         ksort($recd);
             foreach($reced as $key => $value) {
-                $strData.= $key."="&value."&";
+				$strData.= $key."=";
+				if (urlEncode)
+					
+					$strData.= urlencode($value);
+				else
+					$strData.= $value;
+				
+				$strData.="&";
 
             }
         $strData = substr($strData,0,length($strData)-1);
@@ -106,7 +113,47 @@ class PaymentReq implements IPaymentReq{
 	public function makeRequest($requestData){
 		parent::makeRequest($requestData);
 	}
-    
-        
+    public function curlPost(stdClass $data, $url, array $headers){
+		if(!is_string($url)){
+			throw new InvalidArgumentException('URL must be a string');
+		}
+		else{
+			//request datetime
+			$request_time = new DateTime();
+
+			//init curl
+			$curl = curl_init();
+
+			//build json string
+			$data = json_encode($data);
+
+			/**
+			 * CURL OPTIONS
+			 */
+			//set url
+			curl_setopt($curl, CURLOPT_URL, $url);
+
+			//set request headers
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+			//return transfer response as string to the $curl resource
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+			//follow any 'Location:' header the server sends
+			curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+
+			//output verbose info
+			curl_setopt($curl, CURLOPT_VERBOSE, true);
+
+			//request method is POST
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+
+			//request body
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+			$output = curl_exec($curl);
+		}
+	}
+  
 }
 ?>

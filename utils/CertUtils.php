@@ -41,9 +41,10 @@ final class CertUtils{
 	private static rootCert = null;
     
 	private $frontRequestUrl;
-	/** Background request URL. */
-	private $backRequestUrl;
+	
+	
 	/** Single query */
+
 	private $singleQueryUrl;
 	/** Batch query */
 	private $batchQueryUrl;
@@ -100,7 +101,6 @@ final class CertUtils{
 	
 /*
 	$this->frontRequestUrl=getenv('UPOP.FRONTTRANSURL');
-	$this->backRequestUrl=getenv('UPOP.BACKTRANSURL');
 	$this->singleQueryUrl=getenv('UPOP.SINGLEQUERYURL');
 	$this->batchQueryUrl=getenv('UPOP.BATCHTRANSURL');
 	$this->batchTransUrl=getenv('UPOP.FILETRANSURL');
