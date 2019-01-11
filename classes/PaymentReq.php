@@ -17,7 +17,7 @@ class PaymentReq implements IPaymentReq{
 		/*
 		 * funciton to validated values 
 		*/
-        $assVal = array("orderID"=>$dataRecd->orderID,
+        $assVal = array("orderId"=>$dataRecd->orderId,
             "txnTime"=>$dataRecd->txnTime,
 		    "txnAmt"=>$dataRecd->txnAmt
 		);
@@ -40,7 +40,7 @@ class PaymentReq implements IPaymentReq{
             $valid = Utils::validateRequest($recd, $required);
         }
         catch(InvalidArgumentException $e){
-           	$this->log->error($e . 'Invalid Request made'));
+           	$this->log->error($e . 'Invalid Request made');
         }
         return $valid;
     }
@@ -48,35 +48,41 @@ class PaymentReq implements IPaymentReq{
     public function convertToString($recd=null){
         $strData = null;
         ksort($recd);
-            foreach($reced as $key => $value) {
-                $strData.= $key."="&value."&";
+            foreach($recd as $key => $value) {
+                $strData.= $key."=".$value."&";
 
             }
-        $strData = substr($strData,0,length($strData)-1);
+        $strData = substr($strData,0,strlen($strData)-1);
 		return $strData;
 
     }
-    function createHtml($sorted=null, $frontUrl){
-        $html = <<<eot
-			<html>
-			<head>
-				<meta http-equiv="Content-Type" content="text/html; charset={$ $sorted['encoding']}" />
-			</head>
-			<body>
-				<form id="pay_form" name="pay_form" action="{$frontUrl}" method="post">
 
-			eot;
-					foreach ($sorted as $key => $value) {
-						$html .= "    <input type=\"hidden\" name=\"{$key}\" id=\"{$key}\" value=\"{$value}\" />\n";
-					}
-					$html .= <<<eot
-				<input type="submit" type="hidden">
-				</form>
-			</body>
-			</html>
-			eot;
-		return $html;
-	}
+    
+function createHtml($sorted=null, $frontUrl){
+
+// foreach ($sorted as $key => $val) {
+//     echo "$key = $val\n";
+// }
+
+$html = <<<EOT
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset={$sorted['encoding']}" />
+</head>
+<body>
+	<form id="pay_form" name="pay_form" action="{$frontUrl}" method="post">
+EOT;
+		foreach ($sorted as $key => $value) {
+			$html .= "    <input type=\"hidden\" name=\"{$key}\" id=\"{$key}\" value=\"{$value}\" />\n";
+		}
+		$html .= <<<EOT
+	<input type="submit" type="hidden">
+	</form>
+</body>
+</html>
+EOT;
+return $html;
+}
 
 	public function getKeyStore(){
 		$keyStore = null;
@@ -86,15 +92,14 @@ class PaymentReq implements IPaymentReq{
 		if($success){
 			$keystore = CertUtils::getKeystore();
 		}
-		
-		return $keyStore;
+		return $keystore;
 	}
 	public function getSignature($merged_data=null){
 		$keyStore = self::getKeyStore();
 		$strData = self::convertToString($merged_data);
 
 		$pkey = $keyStore['pkey'];
-		$signedData = CertUils::generateSignature($pkey, $strData);
+		$signedData = CertUtils::generateSignature($pkey, $strData);
 		return $signedData;
 	}
 
@@ -106,7 +111,7 @@ class PaymentReq implements IPaymentReq{
 	public function makeRequest($requestData){
 		parent::makeRequest($requestData);
 	}
-    
-        
+
+     
 }
 ?>

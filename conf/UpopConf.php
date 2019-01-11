@@ -3,8 +3,6 @@ namespace UnionPay;
 
 use Dotenv\Dotenv;   
 
-
-
 class UpopConf{
 	private $version;
 	private $encoding;
@@ -15,16 +13,19 @@ class UpopConf{
 	private $accessType;
 	private $channelType;
 	private $currencyCode;
-	private $payTimeOut;
 	/** backUrl  */
 	private $backUrl;
 	/** frontUrl  */
-	private $frontUrl;
+	public $frontUrl;
 
-	private $orderID;
+    public $certId;
+
+    public $frontTransUrl;
+
+	private $orderId;
 	private $txnTime;
 	private $txnAmt;
-	private $mechantID;
+	private $merId;
 	const PURCHASE = 1;
 	const CANCELPURCHASE  = 2;
 	const REFUND  = 3;
@@ -42,13 +43,14 @@ class UpopConf{
         $this->bizType=getenv('UPOP.BIZTYPE');
         $this->accessType=getenv('UPOP.ACCESSTYPE');
         $this->channelType=getenv('UPOP.CHANNELTYPE');
-        $this->merchantID=getenv('UPOP.MERCHANTID');
+        $this->merId=getenv('UPOP.MERCHANTID');
         $this->currencyCode=getenv('UPOP.CURRENCYCODE');
-        $this->payTimeOut=getenv('UPOP.PAYTIMEOUT');
+        //$this->payTimeOut=getenv('UPOP.PAYTIMEOUT');
         $this->smsCode=getenv('UPOP.SMSCODE');
-        $this->frontUrl=getenv('UPOP.BACKURL');
-        $this->backUrl=getenv('UPOP.FRONTURL');
-		$this->certid = getenv('UPOP.CERTID');
+        $this->frontUrl=getenv('UPOP.FRONTURL');
+        $this->backUrl=getenv('UPOP.BACKURL');
+        $this->frontTransUrl=getenv('UPOP.FRONTTRANSURL');
+		$this->certId = getenv('UPOP.CERTID');
 
 
     }
@@ -57,15 +59,15 @@ class UpopConf{
         $content = array(
             "version"=>$this->version,
             "encoding"=>$this->encoding,
-             "signMethod" =>$this->signMethod, 
+            "signMethod" =>$this->signMethod, 
             "bizType"=>$this->bizType,
             "accessType"=>$this->accessType,
             "channelType"=>$this->channelType,
-            "mechantID"=>$this->merchantID,
+            "merId"=>$this->merId,
             "currencyCode"=>$this->currencyCode,
-            "payTimeout"=> $this->payTimeOut,
-            "backurl"=>$this->frontUrl,
-            "fronturl"=>$this->frontUrl
+            "backUrl"=>$this->backUrl,
+            "frontUrl"=>$this->frontUrl,
+            "certId" => $this->certId
         );
     
         return $content;
@@ -81,19 +83,19 @@ class UpopConf{
             'bizType',
             'accessType',
             'channelType',
-            'mechantID',
-            'orderID',
+            'merId',
+            'orderId',
             'txnTime',
             'currencyCode',
-            'payTimeout',
-            'backurl',
-            'fronturl',
-            'txnAmt'
+            'backUrl',
+            'frontUrl',
+            'txnAmt',
+            'certId'
         ];
         return $required_data;
     }
     public function getRequiredUserInputs(){
-        $requiredInputs=['orderID','txnAmt','txnTime','type'];
+        $requiredInputs=['orderId','txnAmt','txnTime','type'];
 		return $requiredInputs;
     }
 }

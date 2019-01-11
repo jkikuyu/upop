@@ -7,38 +7,38 @@
  * @Purpose Class deals with certificate information
  */
 namespace UnionPay;
-use Dotenv/Dotenv;
+use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 final class CertUtils{
     /** Path of signed certificate. */
-    private $signCertPath;
+    public $signCertPath;
     /** Password of signed certificate. */
-    private $signCertPwd;
+    public $signCertPwd;
     /** Type of signed certificate. */
-    private $signCertType;
+    public $signCertType;
     /** Path of encrypted public key certificate. */
-    private $encryptCertPath;
+    public $encryptCertPath;
     /** Authenticate the catalog of signed public key certificates. */
-    private $validateCertDir;
+    public $validateCertDir;
     /** Read the catalog of specified signed certificates according to client codes. */
-    private $signCertDir;
+    public $signCertDir;
     /** Security key (used in calculation of SHA256 and SM3) */
-    private $secureKey;
+    public $secureKey;
 	/** algorithm for signing data**/
-	private $alg;
+	public $alg;
     
-	private static keyStore = null;
+	private static $keyStore = null;
 	/** Encryption public key and certificate for sensitive information */
-	private static encryptCert = null;
+	private static $encryptCert = null;
 	/** Encryption public key for magnetic tracks */
-	private static encryptTrackKey = null;
+	private static $encryptTrackKey = null;
 	/** Verify the messages, signatures, and certificates returned from China UnionPay. */
-	private static validateCert = null;
+	private static $validateCert = null;
 	/** Authenticate the signatures of intermediate certificates */
-	private static middleCert = null;
+	private static $middleCert = null;
 	/** Authenticate the signatures of root certificates */
-	private static rootCert = null;
+	private static $rootCert = null;
     
 	private $frontRequestUrl;
 	/** Background request URL. */
@@ -52,17 +52,17 @@ final class CertUtils{
 	/** File transmission */
 	private $fileTransUrl;
 	/** Path of signed certificate. */
-	private $signCertPath;
+	//private $signCertPath;
 	/** Password of signed certificate. */
-	private $signCertPwd;
+	//private $signCertPwd;
 	/** Type of signed certificate. */
-	private $signCertType;
+	//private $signCertType;
 	/** Path of encrypted public key certificate. */
-	private $encryptCertPath;
+	//private $encryptCertPath;
 	/** Authenticate the catalog of signed public key certificates. */
-	private $validateCertDir;
+	//private $validateCertDir;
 	/** Read the catalog of specified signed certificates according to client codes. */
-	private $signCertDir;
+	//private $signCertDir;
 	/** Path of encrypted certificates for magnetic tracks. */
 	private $encryptTrackCertPath;
 	/** Module of encrypted public keys for magnetic tracks. */
@@ -81,9 +81,9 @@ final class CertUtils{
 	/** Path of root certificates  */
 	private $rootCertPath;
 	/** For whether to verify the CNs of the certificates for verifying certificates, all certificates except the ones for which this parameter has been set to false should be authenticated.  */
-	private boolean ifValidateCNName = true;
+	private $ifValidateCNName = true;
 	/** For whether to authenticate the https certificate, all certificates need not to be authenticated by default.  */
-	private boolean ifValidateRemoteCert = false;
+	private $ifValidateRemoteCert = false;
 
 	/*Payment-related addresses*/
 	private $jfFrontRequestUrl;
@@ -95,7 +95,7 @@ final class CertUtils{
 	private $qrcBackTransUrl;
 	private $qrcB2cIssBackTransUrl;
 	private $qrcB2cMerBackTransUrl;
-	private $log;
+	private static $log;
 	private $logfile;
 	
 /*
@@ -117,36 +117,44 @@ final class CertUtils{
 
 
     public static function init(){
-        $this->signCertPath=getenv('UPOP.SIGNCERT.PATH');
-        $this->signCertPwd=getenv('UPOP.SIGNCERT.PWD');
-        $this->signCertType=getenv('UPOP.SIGNCERT.TYPE');
-        $this->encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
-        $this->middleCertPath=getenv('UPOP.MIDDLECERT.PATH');
-        $this->rootCertPath=getenv('UPOP.ROOTCERT.PATH');
-		$this->alg = getenv('UPOP.ALG');
-		$this-$logfile = Utils::getLogFile();
-		$this-$log = new Logger('Upop');
-		$this-$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+        $signCertPath=getenv('UPOP.SIGNCERT.PATH');
+        $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
+        $signCertType=getenv('UPOP.SIGNCERT.TYPE');
+        $encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
+        $middleCertPath=getenv('UPOP.MIDDLECERT.PATH');
+        $rootCertPath=getenv('UPOP.ROOTCERT.PATH');
+		$alg = getenv('UPOP.ALG');
+		$logfile = Utils::getLogFile();
+		$log = new Logger('Upop');
+		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
 
     }
 
     public static function initCert(){
         $success =false;
-        if ($this->signCertType=='PKCS12'){
+        $signCertPath=getenv('UPOP.SIGNCERT.PATH');
+        $signCertType=getenv('UPOP.SIGNCERT.TYPE');
+        $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
+
+        $logfile = Utils::getLogFile();
+		$log = new Logger('Upop');
+		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+
+        if ($signCertType =='PKCS12'){
         
-            if ($cert_store = file_get_contents(this->signCertPath)) {
-                if (openssl_pkcs12_read($cert_store, self::$keyStore, this->signCertPwd)){
-                   this->log->info("Signed Certicate loaded Successfully");
+            if ($cert_store = file_get_contents($signCertPath)) {
+                if (openssl_pkcs12_read($cert_store, self::$keyStore, $signCertPwd)){
+                   $log->info("Signed Certicate loaded Successfully");
                     $success=true;
 				}
                 else{
-					this->log->info("unable to read file");
+					$log->info("unable to read file");
 
                     throw new \Exception("Error: Unable to read file");
                 }
 			}
             else{
-				this->log->error("unable to read file");
+				$log->error("unable to read file");
                 throw new \Exception("Error: Unable to read the cert file\n");
             }
         }
@@ -155,22 +163,30 @@ final class CertUtils{
 	public static function getkeyStore(){
 		return self::$keyStore;
 	}
-	public static function generateSignature(array $keyStore=null, $data=null){
+	public static function generateSignature($privateKey, $data=null){
 		/* Ensure raw data is encoded using UTF-8, apply hasing. IMPORTANT that resulting hash is encoded 
 		 * again using UTF-8
 		 */
+        $logfile = Utils::getLogFile();
+		$log = new Logger('Upop');
+		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+
+
+		$alg = getenv('UPOP.ALG');
+
 		$utf8=   utf8_encode ($data);
 		$sha256 = hash ("sha256",$utf8);
 		$utf8_enc=   utf8_encode ($sha256); //enchode the hashed data
-		$privateKey = $keystore['pkey']; //retrieve private key from keystore
 		$b64_enc = null;
-    	if (openssl_sign ( $utf8_enc , $signature ,  $privateKey, $this->alg)){
+    	if (openssl_sign ( $utf8_enc , $signature ,  $privateKey, $alg)){
+
 			$b64 = base64_encode($signature);
 		}
 		else{
-			this->log->error("unable to read cert file");
+			$log->error("unable to read cert file");
 			throw new \Exception("Error: Unable to read the cert file\n");
     	}
+    return $b64;
 	}
 
 

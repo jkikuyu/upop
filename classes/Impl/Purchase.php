@@ -43,9 +43,9 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $signature;
 
 	}	
-	public function mergeData($defaultContent=null,$userData=null){
+	public function mergeData($defaultContent=null,$userData=null, $type){
 		$type = ["txnType"=>$this->txntype,"txnSubType"=>$this->txnSubType];
-		$merged_data = parent::mergedData($defaultContent,$userData,$type);
+		$merged_data = parent::mergeData($defaultContent,$userData,$type);
 
 		return $merged_data;
 	}
@@ -54,7 +54,7 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $strData;
 	}
 	public function initiateRequest($sorted, $url){
-		$html = parent::createHtml($sorted,url);
+		$html = parent::createHtml($sorted,$url);
 		header("Content-Type: text/html; charset=" . $sorted['encoding']);
 		echo $html;
 
