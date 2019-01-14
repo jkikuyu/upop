@@ -20,8 +20,8 @@ class Purchase extends PaymentReq implements IPaymentType{
 	private $txnSubType;
 	public function __construct(){
 
-		$this->txntype=getenv('UPOP.PUR.TXNTYPE');
-		$this->txnSubType=getenv('UPOP.PUR.TXNSUBTYPE');
+		$this->txntype=getenv('UPOP.CANCEL.TXNTYPE');
+		$this->txnSubType=getenv('UPOP.CANCEL.TXNSUBTYPE');
 	}
 
 	public function processRequest($merged_data=null, $requiredData=null){
@@ -43,23 +43,30 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $signature;
 
 	}	
-	public function mergeData($defaultContent=null,$userData=null, $type){
+	public function mergeData($defaultContent=null,$userData=null){
 		$type = ["txnType"=>$this->txntype,"txnSubType"=>$this->txnSubType];
-		$merged_data = parent::mergeData($defaultContent,$userData,$type);
+		$merged_data = parent::mergedData($defaultContent,$userData,$type);
 
 		return $merged_data;
 	}
 	public function convertToString($merged_final=null){
-		$strData = parent::convertToString($merged_final,true);
+		$urlEncode=true; 
+		$strData = parent::convertToString($merged_final,$urlEncode);
 		return $strData;
 	}
 	public function initiateRequest($sorted, $url){
-		$html = parent::createHtml($sorted,$url);
-		header("Content-Type: text/html; charset=" . $sorted['encoding']);
+		$html = parent::createHtml($sorted,url);
+		header("Content-type",
+				"application/x-www-form-urlencoded;charset=" . $sorted['encoding']);
 		echo $html;
 
 		
 	}
+
+}
+
+		/* */
+	
 
 
 }

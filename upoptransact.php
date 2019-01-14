@@ -28,9 +28,9 @@ $log->pushHandler(new StreamHandler($logfile , Logger::INFO));
 if ($isRequestJson){
 	$upopconf = new UpopConf();
 	
-	$required_data = $upopconf->getRequiredData();
+	$required_data = $upopconf->getRequiredFlds();
 
-	$requiredUserData = $upopconf->getRequiredUserData();
+	$requiredUserData = $upopconf->getRequiredUserInputs();
 	$json = json_decode($dataRecd);
 	$isValid = Utils::validateRequest($json,$requiredUserData);
 	if ($isValid){
@@ -39,7 +39,7 @@ if ($isRequestJson){
 		switch ($json->type){
 			case UpopConf::PURCHASE:
 				$var = 'Purchase';
-				$url = upopConf->frontUrl;
+				$url = $upopconf->frontTransUrl;
 				// purchase
 
 				break;
@@ -82,15 +82,22 @@ if ($isRequestJson){
 	//use__NAMESPACE__ . '\\' . $var in variable before instantiating
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
-	$defaultContent = upopConf->getDefaultContent();
-	$merged = $classobj->mergeData($defaultContent, $json);
-	$requiredFlds = upopConf->getRequiredFlds();
+	$defaultContent = $upopconf->getDefaultContent();
+	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
+	$requiredFlds = $upopconf->getRequiredFlds();
+
+	$sort = ksort($merged);
+	
 	$signature = $classobj->processRequest($merged, $requiredFlds);
-	$certID = $upopconf->certid;
-	$certDetail = ["signature"=>$signature,"certId"=>certID];
+	//$certID = $upopconf->certid;
+	//$certDetail = ["signature"=>$signature,"certId"=>$certID];
+	$certDetail = ["signature"=>$signature];
 	$merged_final= array_merge($merged,$certDetail);
-	$sorted = ksort($merged_final);
-	$classobj->initiateRequest($sorted,$url);
+	
+
+	// $sorted = ksort($merged_final);
+
+	$classobj->initiateRequest($merged_final,$url);
 }
 
 else{
@@ -99,7 +106,4 @@ else{
 	new \Exception ("invalid JSON request");
 
 }
-
-
-
 ?>
