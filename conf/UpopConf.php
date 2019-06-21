@@ -16,17 +16,13 @@ class UpopConf{
 	/** backUrl  */
 	private $backUrl;
 	/** frontUrl  */
-<<<<<<< HEAD
 	private $frontUrl;
 	/** Background request URL. */
 	private $backRequestUrl;
-=======
-	public $frontUrl;
 
-    public $certId;
+    private $certId;
 
     public $frontTransUrl;
->>>>>>> d460fbe9320172e2ea287c814021a63787a2e090
 
 	private $orderId;
 	private $txnTime;
@@ -59,7 +55,6 @@ class UpopConf{
         $this->frontTransUrl=getenv('UPOP.FRONTTRANSURL');
 		$this->certId = getenv('UPOP.CERTID');
 
-
     }
     
     public function getDefaultContent(){
@@ -91,7 +86,7 @@ class UpopConf{
             'accessType',
             'channelType',
             'merId',
-            'orderId',
+            'orderid',
             'txnTime',
             'currencyCode',
             'backUrl',

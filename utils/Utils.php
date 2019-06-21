@@ -59,9 +59,9 @@ final class Utils{
         file_put_contents($filepath, $logs."\n", FILE_APPEND | LOCK_EX);
     }
     public static function getLogFile(){
-        $dotenv = new Dotenv(__DIR__.'/../');
-        $dotenv->load();
-        $dirname = getenv('LOGDIR');
+		$dotenv = new Dotenv(__DIR__.'/../');
+		$dotenv->load();
+		$dirname = getenv('LOGDIR');
 
         if(!is_string($dirname)){
             throw new \InvalidArgumentException('dirname must be a string');

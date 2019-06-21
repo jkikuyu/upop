@@ -18,16 +18,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
-$dataRecd = file_get_contents('php://input');
-
+//$dataRecd = file_get_contents('php://input');
+$dataRecd='{"type":"1", "orderId":"1234567", "txnAmt":"1", "txnTime":"20190618233948"}';
 $isRequestJson = (json_decode($dataRecd) != NULL) ? true : false;
 $logfile = Utils::getLogFile();
 $log = new Logger('Upop');
 $log->pushHandler(new StreamHandler($logfile , Logger::INFO));
-
 if ($isRequestJson){
+
 	$upopconf = new UpopConf();
-	
 	$required_data = $upopconf->getRequiredFlds();
 
 	$requiredUserData = $upopconf->getRequiredUserInputs();
@@ -45,7 +44,7 @@ if ($isRequestJson){
 				break;
 			case UpopConf::CANCELPURCHASE:
 				$var = 'PurchaseCancel';
-				$url = upopConf->backTransUrl;
+				$url = $upopconf->backTransUrl;
 
 				//purchase Cancel
 				break;
@@ -85,7 +84,7 @@ if ($isRequestJson){
 	$defaultContent = $upopconf->getDefaultContent();
 	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
 	$requiredFlds = $upopconf->getRequiredFlds();
-
+	
 	$sort = ksort($merged);
 	
 	$signature = $classobj->processRequest($merged, $requiredFlds);

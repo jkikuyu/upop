@@ -17,7 +17,7 @@ class PaymentReq implements IPaymentReq{
 		/*
 		 * funciton to validated values 
 		*/
-        $assVal = array("orderId"=>$dataRecd->orderId,
+        $assVal = array("orderid"=>$dataRecd->orderId,
             "txnTime"=>$dataRecd->txnTime,
 		    "txnAmt"=>$dataRecd->txnAmt
 		);
@@ -45,7 +45,7 @@ class PaymentReq implements IPaymentReq{
         return $valid;
     }
 
-    public function convertToString($recd=null, boolean urlEncode=false){
+    public function convertToString($recd=null){
         $strData = null;
         ksort($recd);
 /*<<<<<<< HEAD
@@ -163,6 +163,6 @@ return $html;
 			$output = curl_exec($curl);
 		}
 	}
-0
+
 }
 ?>
