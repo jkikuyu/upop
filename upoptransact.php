@@ -19,11 +19,12 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 //$dataRecd = file_get_contents('php://input');
-$dataRecd='{"type":"1", "orderId":"1234567", "txnAmt":"1", "txnTime":"20190618233948"}';
+$dataRecd='{"type":"1", "card":"6216261000000000018","orderId":"1234567", "txnAmt":"1", "txnTime":"20190618233948"}';
 $isRequestJson = (json_decode($dataRecd) != NULL) ? true : false;
 $logfile = Utils::getLogFile();
 $log = new Logger('Upop');
 $log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+
 if ($isRequestJson){
 
 	$upopconf = new UpopConf();
@@ -32,6 +33,7 @@ if ($isRequestJson){
 	$requiredUserData = $upopconf->getRequiredUserInputs();
 	$json = json_decode($dataRecd);
 	$isValid = Utils::validateRequest($json,$requiredUserData);
+
 	if ($isValid){
 
 		$class = null;
@@ -78,16 +80,25 @@ if ($isRequestJson){
 		$log->error("invalid JSON request");
 		new \Exception ("invalid JSON request");
 	}
-	//use__NAMESPACE__ . '\\' . $var in variable before instantiating
+	$custInfo = new CustomerInfo();
+	$card = $json->card;
+
+	$encryptedCard = $custInfo->encryptCard($card);
+	echo "encrypted card: ".$encryptedCard;
+	//use __NAMESPACE__ . '\\' . $var in variable before instantiating
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
 	$defaultContent = $upopconf->getDefaultContent();
+	
 	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
 	$requiredFlds = $upopconf->getRequiredFlds();
 	
 	$sort = ksort($merged);
 	
 	$signature = $classobj->processRequest($merged, $requiredFlds);
+
+
+
 	//$certID = $upopconf->certid;
 	//$certDetail = ["signature"=>$signature,"certId"=>$certID];
 	$certDetail = ["signature"=>$signature];
@@ -97,6 +108,7 @@ if ($isRequestJson){
 	// $sorted = ksort($merged_final);
 
 	$classobj->initiateRequest($merged_final,$url);
+	
 }
 
 else{

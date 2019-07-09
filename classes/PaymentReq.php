@@ -95,18 +95,8 @@ EOT;
 return $html;
 }
 
-	public function getKeyStore(){
-		$keyStore = null;
-		CertUtils::init();
-		$success = CertUtils::initCert();
-		
-		if($success){
-			$keystore = CertUtils::getKeystore();
-		}
-		return $keystore;
-	}
 	public function getSignature($merged_data=null){
-		$keyStore = self::getKeyStore();
+		$keyStore = CertUtils::getKeyStore();
 		$strData = self::convertToString($merged_data);
 
 		$pkey = $keyStore['pkey'];

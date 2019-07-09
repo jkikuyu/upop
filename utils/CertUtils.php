@@ -28,7 +28,7 @@ final class CertUtils{
 	/** algorithm for signing data**/
 	public $alg;
     
-	private static $keyStore = null;
+	private static $keystore = null;
 	/** Encryption public key and certificate for sensitive information */
 	private static $encryptCert = null;
 	/** Encryption public key for magnetic tracks */
@@ -131,7 +131,7 @@ final class CertUtils{
     }
 
     public static function initCert(){
-        $success =false;
+		$success =false;
         $signCertPath=getenv('UPOP.SIGNCERT.PATH');
         $signCertType=getenv('UPOP.SIGNCERT.TYPE');
         $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
@@ -141,28 +141,36 @@ final class CertUtils{
 		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
 
         if ($signCertType =='PKCS12'){
-        
-            if ($cert_store = file_get_contents($signCertPath)) {
-                if (openssl_pkcs12_read($cert_store, self::$keyStore, $signCertPwd)){
-                   $log->info("Signed Certicate loaded Successfully");
-                    $success=true;
-				}
-                else{
-					$log->info("unable to read file");
+			  if ($cert_store = file_get_contents($signCertPath)) {
 
-                    throw new \Exception("Error: Unable to read file");
-                }
+
+					if (openssl_pkcs12_read($cert_store, self::$keystore, $signCertPwd)){
+					   $log->info("Signed Certicate loaded Successfully");
+						$success=true;
+					}
+					else{
+						$log->info("unable to read file");
+
+						throw new \Exception("Error: Unable to read file");
+
+					}
+
 			}
-            else{
+			else{
 				$log->error("unable to read file");
-                throw new \Exception("Error: Unable to read the cert file\n");
-            }
+				throw new \Exception("Error: Unable to read the cert file\n");
+			}
+		}
+		return $success ;
+
         }
-        return $success;
-	}
 	public static function getkeyStore(){
-		return self::$keyStore;
+		self::init();
+		$success = self::initCert();
+		
+		return self::$keystore;
 	}
+
 	public static function generateSignature($privateKey, $data=null){
 		/* Ensure raw data is encoded using UTF-8, apply hasing. IMPORTANT that resulting hash is encoded 
 		 * again using UTF-8
