@@ -196,8 +196,19 @@ final class CertUtils{
     	}
     return $b64;
 	}
-
-
+    
+public static function getPublicKey(){
+    if ($encrypted = file_get_contents($encryptCert)) {
+        $publickey = openssl_pkey_get_public($encryptCert);
+        $keyData = openssl_pkey_get_details($publickey);
+    }
+    else{
+        $log->error("unable to read cert file");
+        throw new \Exception("Error: Unable to read the public key file\n");
+     
+    }
+    return $keydata;
+}
    /* public static function initMiddleCert(){
         $success = false
         if ($fp =fopen(this->middleCertPath, "r")){
