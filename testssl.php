@@ -14,13 +14,21 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
     echo "Error: Unable to read the cert file\n";
     exit;
 }
-if (!$encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.pfx")) {
+if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
+	echo "encryption cert";
+    $publickey = openssl_pkey_get_public($encfile);
+    $keyData = openssl_pkey_get_details($publickey);
+    $pubkey=$keyData['key'];
+    $card="6216261000000000018";
+    openssl_public_encrypt($card, $encStr, $pubkey, OPENSSL_PKCS1_OAEP_PADDING);   
+    echo "encrypted string :::::".$encStra;
+
     echo "Error: Unable to read the cert file\n";
     exit;
 }
 
 
-$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
+/*$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
 $version = "5.1.0";
 $encoding="UTF-8";
 $signMethod="01";
@@ -100,7 +108,8 @@ $channeltype="07";
 				echo "error in signing";
 			}
 		}
-        if ($encrypted = file_get_contents($encryptCert)) {
+        if ($encrypted = file_get_contents($encfile)) {
+        	echo "encryption cert";
             $publickey = openssl_pkey_get_public($encrypted);
             $keyData = openssl_pkey_get_details($publickey);
             $card="6216261000000000018";
@@ -125,7 +134,7 @@ $channeltype="07";
 
             }
         $strData = substr($strData,0,strlen($strData)-1);
-//		echo $strData;
+*///		echo $strData;
 
 
 //		$context = stream_context_create( array (
