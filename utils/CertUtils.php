@@ -144,7 +144,7 @@ final class CertUtils{
 			  if ($cert_store = file_get_contents($signCertPath)) {
 
 
-					if (openssl_pkcs12_read($cert_store, self::$keystore, $signCertPwd)){
+					if (openssl_pkcs12_read($cert_store, self::$tore, $signCertPwd)){
 					   $log->info("Signed Certicate loaded Successfully");
 						$success=true;
 					}
