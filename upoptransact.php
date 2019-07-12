@@ -84,12 +84,14 @@ if ($isRequestJson){
 	$card = $json->card;
 
 	$encryptedCard = $custInfo->encryptCard($card);
+	$encrptedCustomerInfo =  $custInfo->encryptCustomerInfo;
+	$customerData = ["accNo"=>$encryptedCard, "customerInfo"=>$encrptedCustomerInfo,"payTimeout"=>""];
 	echo "encrypted card: ".$encryptedCard;
 	//use __NAMESPACE__ . '\\' . $var in variable before instantiating
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
 	$defaultContent = $upopconf->getDefaultContent();
-	
+	$defaultContent=array_merge($defaultContent,$customerData);
 	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
 	$requiredFlds = $upopconf->getRequiredFlds();
 	

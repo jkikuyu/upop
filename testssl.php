@@ -8,7 +8,8 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 $data = 
-	
+/*{bizType=000000, txnSubType=01, orderId=20190712171208 , backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse, accNo=BUBHjllhN2lfUh+lUCDHsIHVxssi2P1bVSZjX6CgnsFsRF8pyqs+RA4qBNw3ZwV31rnTSgXu7FJqbBgRkvX49pqyfy+786KWozxmX6VNWFPEa5SZfTtxfRCWSPpGUQjRXtEv5ve1Mr4YPmZzEIp5/jcH9gR2s3dee3Lv5mT7lcnBLll5BpIr+BDnw9VoTimj2x4xjT2Ijqh4Ip/JK58z/M9DPfogsiV/Cro85BEwLcFLXpMM84pwgBP0fADTeL4JJQ9gCW1ihVmNRAE/Wz1UiBkpxlbisUzt3hqf8WXKPojU06ZuseactB2us4dxonYYfQa7bFKPuvNaS2Rp2lbXfg==, customerInfo=e3Ntc0NvZGU9MTExMTExfQ==, txnType=01, channelType=07, encoding=UTF-8, version=5.1.0, accessType=0, encryptCertId=68759622183, txnTime=20190712171208 , merId=000000070000017, payTimeout=, currencyCode=156, signMethod=01, txnAmt=1000 }	
+*/
 $pass = "000000";
 if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
     echo "Error: Unable to read the cert file\n";
@@ -21,7 +22,8 @@ if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_
     $pubkey=$keyData['key'];
     $card="6216261000000000018";
     openssl_public_encrypt($card, $encStr, $pubkey, OPENSSL_PKCS1_OAEP_PADDING);   
-    echo "encrypted string :::::".$encStra;
+    $out = base64_encode($encStr);
+    echo "encrypted string :::::".$out;
 
     echo "Error: Unable to read the cert file\n";
     exit;
