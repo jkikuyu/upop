@@ -115,6 +115,11 @@ final class CertUtils{
 	$this->ifValidateRemoteCert=getenv('UPOP.IFVALIDATEREMOTECERT');
 */
 
+	public function __construct(){
+		echo "test";
+		init();
+
+	}
 
     public static function init(){
         $signCertPath=getenv('UPOP.SIGNCERT.PATH');
@@ -127,6 +132,7 @@ final class CertUtils{
 		$logfile = Utils::getLogFile();
 		$log = new Logger('Upop');
 		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+		echo "encrypt file". $encryptCert;
 
     }
 
@@ -144,7 +150,7 @@ final class CertUtils{
 			  if ($cert_store = file_get_contents($signCertPath)) {
 
 
-					if (openssl_pkcs12_read($cert_store, self::$tore, $signCertPwd)){
+					if (openssl_pkcs12_read($cert_store, self::$keystore, $signCertPwd)){
 					   $log->info("Signed Certicate loaded Successfully");
 						$success=true;
 					}
@@ -165,7 +171,6 @@ final class CertUtils{
 
         }
 	public static function getkeyStore(){
-		self::init();
 		$success = self::initCert();
 		
 		return self::$keystore;
@@ -198,7 +203,8 @@ final class CertUtils{
 	}
     
 public static function getPublicKey(){
-    if ($encrypted = file_get_contents($encryptCert)) {
+	self::$encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
+	if ($encrypted = file_get_contents(self::$encryptCert)) {
         $publickey = openssl_pkey_get_public($encrypted);
         $keyData = openssl_pkey_get_details($publickey);
 	    $key=$keyData['key'];

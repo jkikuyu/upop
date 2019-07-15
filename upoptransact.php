@@ -82,9 +82,9 @@ if ($isRequestJson){
 	}
 	$custInfo = new CustomerInfo();
 	$card = $json->card;
-
+	$customerInfo = ["smsCode"=>"123456"];
 	$encryptedCard = $custInfo->encryptCard($card);
-	$encrptedCustomerInfo =  $custInfo->encryptCustomerInfo;
+	$encrptedCustomerInfo =  $custInfo->encryptCustomerInfo($customerInfo,$json->card);
 	$customerData = ["accNo"=>$encryptedCard, "customerInfo"=>$encrptedCustomerInfo,"payTimeout"=>""];
 	echo "encrypted card: ".$encryptedCard;
 	//use __NAMESPACE__ . '\\' . $var in variable before instantiating

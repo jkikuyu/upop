@@ -53,9 +53,11 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $strData;
 	}
 	public function initiateRequest($sorted, $url){
+/*
 		$html = parent::createHtml($sorted,$url);
 		header("Content-Type: text/html; charset=" . $sorted['encoding']);
 		echo $html;
+*/
 
 		
 	}

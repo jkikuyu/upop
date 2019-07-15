@@ -8,29 +8,35 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 $data = 
+/*bizType=000000&txnSubType=01&orderId=20190715185304&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=TJE9Nz5XWux%2Bw5gXWb51Bun2pMBa%2BC2jBpxKzxQJicAw9SNF1FfRRjMdLocTbuPvRKrYwHH0MGJs%2BqQcSvL47Yb%2B6ZNWrk%2F79Bnmf0YNcwMQNmer0Sd0%2BcS3gLTzB6PI3bHmJI2A7sGhY96UA%2BYyGQn2xdoWeatt9lRmtspCKmcNqsWLAuc3JowZX1tKpsIGnvmW74j0HqBdTDazKJUH6%2BQ4aPod%2B6w28QoUor65Dt0zFUHIaVA%2FmMfRkLyvemSF7COGhv4wC1Y1FtdxpskB5DBV3znJ4TYj01m8NEWpN%2BEXkbuLcOYxjlsyQuT9dUh8W7DorWc%2FJWxfXLzCBaiL7Q%3D%3D&accNo=rb53Iomfgo4tKTFLT65OjbpWfsKT5v9C4S9DlGviiXKpfbqUbC68F4uBLqV3g%2BNMFlur9eFWz81x%2FLVNfubtnhojpSkrQ%2FkZ2BvpaXIPM45uWUHyHBgZ8a1I1f8cTeF0Pbk6A2tRY7Xgb3OS8B0uiqlp5Bijj5%2Bykxu70tYMwGUEU4spkWTLZn%2FHvPk5RdAhA79fvwInU7gX0B3cdf4KPNKG11q%2F8KmHJmAXsQNtx%2BSPqDA06dvp1ATBx3qgVaEXx5bpsoBHFgTO0I2LcqngGHJU2IAfxREfUdfQkrBAXw41YpVoSlcJF7YV9%2Bqr0NYJdX6qegVVLgG3IiBIMKlGnQ%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190715185304&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000*/
+	
 /*{bizType=000000, txnSubType=01, orderId=20190712171208 , backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse, accNo=BUBHjllhN2lfUh+lUCDHsIHVxssi2P1bVSZjX6CgnsFsRF8pyqs+RA4qBNw3ZwV31rnTSgXu7FJqbBgRkvX49pqyfy+786KWozxmX6VNWFPEa5SZfTtxfRCWSPpGUQjRXtEv5ve1Mr4YPmZzEIp5/jcH9gR2s3dee3Lv5mT7lcnBLll5BpIr+BDnw9VoTimj2x4xjT2Ijqh4Ip/JK58z/M9DPfogsiV/Cro85BEwLcFLXpMM84pwgBP0fADTeL4JJQ9gCW1ihVmNRAE/Wz1UiBkpxlbisUzt3hqf8WXKPojU06ZuseactB2us4dxonYYfQa7bFKPuvNaS2Rp2lbXfg==, customerInfo=e3Ntc0NvZGU9MTExMTExfQ==, txnType=01, channelType=07, encoding=UTF-8, version=5.1.0, accessType=0, encryptCertId=68759622183, txnTime=20190712171208 , merId=000000070000017, payTimeout=, currencyCode=156, signMethod=01, txnAmt=1000 }	
 */
 $pass = "000000";
+$encSuccess = false;
+
 if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
     echo "Error: Unable to read the cert file\n";
     exit;
 }
 if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
 	echo "encryption cert";
+	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
     $keyData = openssl_pkey_get_details($publickey);
     $pubkey=$keyData['key'];
     $card="6216261000000000018";
     openssl_public_encrypt($card, $encStr, $pubkey, OPENSSL_PKCS1_OAEP_PADDING);   
     $out = base64_encode($encStr);
-    echo "encrypted string :::::".$out;
-
+    //echo "encrypted string :::::".$out;
+}
+else{
     echo "Error: Unable to read the cert file\n";
     exit;
 }
 
 
-/*$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
+$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
 $version = "5.1.0";
 $encoding="UTF-8";
 $signMethod="01";
@@ -93,7 +99,7 @@ $channeltype="07";
 			$len -=1;
 			$str = substr($str, 0, $len);
 
-		echo "string to be signed: ".$str;
+		//echo "string to be signed: ".$str;
 		if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
 			$utf8=   utf8_encode ($str);
 			$sha256 = hash ("sha256",$utf8);
@@ -110,21 +116,21 @@ $channeltype="07";
 				echo "error in signing";
 			}
 		}
-        if ($encrypted = file_get_contents($encfile)) {
-        	echo "encryption cert";
-            $publickey = openssl_pkey_get_public($encrypted);
+        if ($encSuccess) {
+            $publickey = openssl_pkey_get_public($encfile);
             $keyData = openssl_pkey_get_details($publickey);
+			$key=$keyData['key'];
             $card="6216261000000000018";
-            openssl_public_encrypt($text, $encStr, $keyData, OPENSSL_PKCS1_OAEP_PADDING);   
-            echo "encrypted string :::::".$encStra;
+            openssl_public_encrypt($card, $encStr, $key, OPENSSL_PKCS1_OAEP_PADDING);   
+            //echo "encrypted string :::::".$encStr;
         }
         else{
             echo "error in public key";
         }
 
-		echo "<br /><br />";
+		//echo "<br /><br />";
 		$sig = ["signature"=>$b64];
-		echo "Signature : ". $b64;
+		//echo "Signature : ". $b64;
 		$data = array_merge($data,$sig);
 		$strData=""; 
             foreach($data as $key => $value) {
@@ -136,7 +142,7 @@ $channeltype="07";
 
             }
         $strData = substr($strData,0,strlen($strData)-1);
-*///		echo $strData;
+//		echo $strData;
 
 
 //		$context = stream_context_create( array (
@@ -164,9 +170,9 @@ $channeltype="07";
 
 
 
-//		echo $strData;
+		//echo $strData;
 
-/*
+
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -189,7 +195,7 @@ $channeltype="07";
 
 		$output = curl_exec($curl);
 		echo "result <br />".$output;
-*/
+
 		//var_dump($output);
 
 

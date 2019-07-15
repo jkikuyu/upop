@@ -12,28 +12,31 @@ class CustomerInfo extends PaymentReq implements ICustomerInfo{
 	}
 	
 	public function encryptCard($card_number){
-		$key = CertUtils::publicKey();
+		$key = CertUtils::getPublicKey();
 		openssl_public_encrypt($card_number, $enc, $key, OPENSSL_PKCS1_OAEP_PADDING);   
     	$cardEnc = base64_encode($enc);
-
-	retun $cardEnc;	
+		echo "card enc: ".$cardEnc;
+	return $cardEnc;	
 	}
 	public function encryptCustomerInfo(array $customerInfo, $card_number){
-		foreach ($customerInfo-as $key=>$value){
+		foreach ($customerInfo as $key=>$value){
 			if($key==="phoneNo" || $key==="cvn2" || $key==="expired"){
 				$strData.= $key."=".$value."&";
 
 
 			}
-			else if ($key==="pin" && strlen(trim($card_number))>0){
+			else{ 
+				if ($key==="pin" && strlen(trim($card_number))>0){
 
+				}
+				$strData = $key."=".$value."&";
 			}
-
 
 		}
 	    $strData = "{" . substr($strData,0,strlen($strData)-1) . "}";
 
 	    $customerInfoEnc = base64_encode($strData);
+		echo "customer info enc:" . $customerInfoEnc;
 	 return $customerInfoEnc;
 	}
 }
