@@ -20,7 +20,7 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
     exit;
 }
 if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
-	echo "encryption cert";
+	//echo "encryption cert";
 	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
     $keyData = openssl_pkey_get_details($publickey);
@@ -58,7 +58,7 @@ $txntime="20190621143842";
 
 $certId = "69629715588";
 
-$accNo = "FWRxIO0OdBP6JeU6/PPeYJKCOdv5rCIhmUUW/dsYX5Abe0bEUNgJNBRv8QoNkeEdpeu9/jWsgw2zzDXvpkZ81r0hOwxyz1+/kim3EumalCwtBWZrJvO9TXkxELPni5Tpem+4udg/rdWPgBi+2/M2igtJ/XihNs36p0amFT0RXwtRRvdvz8g3bz7dOq2Cf7+OWDtOrDN5sFdXfXo5sivehQha9dhu+mLOTep2vqoTpEr3Re4yPjkrigCI5Z9HEdi101S7z8Rw1OTbzbDxj4NNhAB49rIXGEybgeTNVGkHURFy2HbpTpNdbJYKAAv5vLkWtvtA/WNzciD+ict8DHfzcw==";
+$accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==";
 $encryptCertId="68759622183";
 $customerInfo = "e3Ntc0NvZGU9MTExMTExfQ==";
 $channeltype="07";
@@ -87,7 +87,6 @@ $channeltype="07";
 	   
       //      "fronturl"=>$frontUrl,
 			ksort($data);
-
 			$str="";
 		 	foreach($data as $key => $value) {
 				$str.= $key."=";
@@ -98,11 +97,31 @@ $channeltype="07";
 			$len = strlen($str);
 			$len -=1;
 			$str = substr($str, 0, $len);
+			echo "<br /> data to sign<br />". $str;
 
+/*
+			$str = "accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==&accessType=0&backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse&bizType=000000&certId=69629715588&channelType=07&currencyCode=156&customerInfo=e3Ntc0NvZGU9MTExMTExfQ==&encoding=UTF-8&encryptCertId=68759622183&merId=000000070000017&orderId=20190717132446&signMethod=01&txnAmt=1000&txnSubType=01&txnTime=20190717132446&txnType=01&version=5.1.0";
+*/
 		//echo "string to be signed: ".$str;
+        if ($encSuccess) {
+            $publickey = openssl_pkey_get_public($encfile);
+            $keyData = openssl_pkey_get_details($publickey);
+			$key=$keyData['key'];
+            $card="6216261000000000018";
+            openssl_public_encrypt($card, $encStr, $key, OPENSSL_PKCS1_OAEP_PADDING);   
+            //echo "encrypted string :::::".$encStr;
+        }
+        else{
+            echo "error in public key";
+        }
+
 		if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
+			
 			$utf8=   utf8_encode ($str);
+			echo "<br />UTF 8: <br />". $utf8;
 			$sha256 = hash ("sha256",$utf8);
+			
+			echo "<br /><br />" .$sha256;
 			$utf8_1=   utf8_encode ($sha256);
 			$privateKey = $certs['pkey'];
 			if (openssl_sign ( $utf8_1 , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
@@ -116,18 +135,7 @@ $channeltype="07";
 				echo "error in signing";
 			}
 		}
-        if ($encSuccess) {
-            $publickey = openssl_pkey_get_public($encfile);
-            $keyData = openssl_pkey_get_details($publickey);
-			$key=$keyData['key'];
-            $card="6216261000000000018";
-            openssl_public_encrypt($card, $encStr, $key, OPENSSL_PKCS1_OAEP_PADDING);   
-            //echo "encrypted string :::::".$encStr;
-        }
-        else{
-            echo "error in public key";
-        }
-
+		echo "<br />b64 :<br />".$b64."<br />";
 		//echo "<br /><br />";
 		$sig = ["signature"=>$b64];
 		//echo "Signature : ". $b64;
@@ -142,7 +150,7 @@ $channeltype="07";
 
             }
         $strData = substr($strData,0,strlen($strData)-1);
-//		echo $strData;
+		echo "<br />string to send :<br />".$strData;
 
 
 //		$context = stream_context_create( array (
@@ -173,6 +181,8 @@ $channeltype="07";
 		//echo $strData;
 
 
+
+	/*	$strData= "bizType=000000&txnSubType=01&orderId=20190717132446&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=tNetk1PgMyQCAm3Ak%2BqpXOxvhUyKjI1BvYMezXS0H3BYwM6pp7zw1PkaChQUtH%2FILhYWJfjyh2y1PZwoZeI%2FKLaLM1hddeGRWhzlnHb7NPj5I1Ew3%2F0XAfBSo2%2B%2BBoVc2LFeSPDILzpVtlvHqXLeGVvg8tlGr0jt4d1l8zx9KtKgG7t5m4J53bVYexP%2BHelonfuuwEmyV%2FCi%2B%2FMlHHYuIDepO2JuAcZTUAK67VmYCJWtXjSZ38anl%2ByRvQu%2Bp%2Fzu%2BlHIVEv5tojnCsFy8MdjCIQm%2BQ53Z8Wjala1G3fafAukrdN3v4AHEu87fRUJrucym%2F9JNROiE5yPH%2FD%2Fghkk8Q%3D%3D&accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV%2Bns2oJqGm5tthIpgI%2BZ%2BxxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4%2Bh644Akrmb8cUeeK1%2FTwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK%2BQ3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B%2BrTAPwFI1Oz7swDrcCkbUXiQIsW%2Bo347SasU4DgDLCR2M%2FNZ0pBt0QGsa6NpccB%2FK9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190717132446&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000";
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -194,7 +204,9 @@ $channeltype="07";
 		curl_setopt($curl, CURLOPT_VERBOSE, 1);
 
 		$output = curl_exec($curl);
+
 		echo "result <br />".$output;
+*/
 
 		//var_dump($output);
 
