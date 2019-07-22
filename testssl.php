@@ -69,23 +69,24 @@ $channeltype="07";
 	   		"orderId"=>$orderid,
             "backUrl"=>$backUrl,
 	   		"accNo" =>$accNo,
-	   		"encryptCertId"=>$encryptCertId,
+	 	   	"customerInfo"=>$customerInfo,
 	   		"txnType"=>$txntype,
 	        "channelType"=>$channeltype,
 	   		"certId"=>$certId,
 	        "encoding"=>$encoding,
 	   		"version"=>$version,
             "accessType"=>$accessType,
+	   		"encryptCertId"=>$encryptCertId,
 	   		"txnTime"=>$txntime,
             "merId"=>$merchantID,
             "currencyCode"=>$currencyCode,
 	        "signMethod" =>$signMethod, 
-	   		"customerInfo"=>$customerInfo,
 		   	"txnAmt"=>$txnAmt
 		   ];
      //       "payTimeout"=> $payTimeOut,
 	   
       //      "fronturl"=>$frontUrl,
+			$orig = $data;
 			ksort($data);
 			$str="";
 		 	foreach($data as $key => $value) {
@@ -97,7 +98,7 @@ $channeltype="07";
 			$len = strlen($str);
 			$len -=1;
 			$str = substr($str, 0, $len);
-			echo "<br /> data to sign<br />". $str;
+			//echo "<br /> data to sign<br />". $str;
 
 /*
 			$str = "accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==&accessType=0&backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse&bizType=000000&certId=69629715588&channelType=07&currencyCode=156&customerInfo=e3Ntc0NvZGU9MTExMTExfQ==&encoding=UTF-8&encryptCertId=68759622183&merId=000000070000017&orderId=20190717132446&signMethod=01&txnAmt=1000&txnSubType=01&txnTime=20190717132446&txnType=01&version=5.1.0";
@@ -126,7 +127,7 @@ $channeltype="07";
 			$privateKey = $certs['pkey'];
 			if (openssl_sign ( $utf8_1 , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
 				$b64 = base64_encode($signature);
-				//echo " base 64 :" . $b64;
+				echo " base 64 :" . $b64;
 				//$final = unpack('c*', $b64);
 				//print_r($final);
 
@@ -135,11 +136,18 @@ $channeltype="07";
 				echo "error in signing";
 			}
 		}
-		echo "<br />b64 :<br />".$b64."<br />";
+		//echo "<br />b64 :<br />".$b64."<br />";
 		//echo "<br /><br />";
-		$sig = ["signature"=>$b64];
+		//$sig = ["signature"=>$b64];
 		//echo "Signature : ". $b64;
-		$data = array_merge($data,$sig);
+		//$data = array_merge($data,$sig);
+    	$keys = array_keys( $orig );
+    	$keys[ array_search( "accNo", $keys ) ] = "signature";
+		$data=array_combine( $keys, $orig);
+		$data["signature"]=$b64;
+		//unset($data["accNo"]);
+		//var_dump($data);
+
 		$strData=""; 
             foreach($data as $key => $value) {
 				$strData.= $key."=";
@@ -151,7 +159,6 @@ $channeltype="07";
             }
         $strData = substr($strData,0,strlen($strData)-1);
 		echo "<br />string to send :<br />".$strData;
-
 
 //		$context = stream_context_create( array (
 //			
@@ -183,6 +190,7 @@ $channeltype="07";
 
 
 	/*	$strData= "bizType=000000&txnSubType=01&orderId=20190717132446&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=tNetk1PgMyQCAm3Ak%2BqpXOxvhUyKjI1BvYMezXS0H3BYwM6pp7zw1PkaChQUtH%2FILhYWJfjyh2y1PZwoZeI%2FKLaLM1hddeGRWhzlnHb7NPj5I1Ew3%2F0XAfBSo2%2B%2BBoVc2LFeSPDILzpVtlvHqXLeGVvg8tlGr0jt4d1l8zx9KtKgG7t5m4J53bVYexP%2BHelonfuuwEmyV%2FCi%2B%2FMlHHYuIDepO2JuAcZTUAK67VmYCJWtXjSZ38anl%2ByRvQu%2Bp%2Fzu%2BlHIVEv5tojnCsFy8MdjCIQm%2BQ53Z8Wjala1G3fafAukrdN3v4AHEu87fRUJrucym%2F9JNROiE5yPH%2FD%2Fghkk8Q%3D%3D&accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV%2Bns2oJqGm5tthIpgI%2BZ%2BxxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4%2Bh644Akrmb8cUeeK1%2FTwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK%2BQ3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B%2BrTAPwFI1Oz7swDrcCkbUXiQIsW%2Bo347SasU4DgDLCR2M%2FNZ0pBt0QGsa6NpccB%2FK9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190717132446&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000";
+	*/
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -206,7 +214,7 @@ $channeltype="07";
 		$output = curl_exec($curl);
 
 		echo "result <br />".$output;
-*/
+
 
 		//var_dump($output);
 
