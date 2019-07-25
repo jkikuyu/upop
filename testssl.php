@@ -37,31 +37,37 @@ else{
 
 
 $headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
-$version = "5.1.0";
-$encoding="UTF-8";
-$signMethod="01";
 $bizType="000000";
+
+$txnsubtype="01";
+$orderid ="20190725090156";
+$backUrl="http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse";
+$signature="";
+$customerInfo = "e3Ntc0NvZGU9MTExMTExfQ==";
+$txntype="01";
+$channeltype="07";
+certId="69629715588";
+$encoding="UTF-8";
+$version = "5.1.0";
 $accessType="0";
+$encryptedCertId = "68759622183";
+
 $merchantID="000000070000017";
 $currencyCode="156";
 //$payTimeOut
 //$backUrl="https://165.227.173.79/upop/back_notify.php";
-$backUrl="http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse";
+$signMethod="01";
 $txnAmt ="1000";
 
-$txntype="01";
-$txnsubtype="01";
-$txnTime = "20190621143842";
-$orderid ="20190621143842";
+//$txnTime = "20190725090156";
 //$qryid = "777290058110048";
-$txntime="20190621143842";
 
-$certId = "69629715588";
 
+
+/*
 $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==";
-$encryptCertId="68759622183";
-$customerInfo = "e3Ntc0NvZGU9MTExMTExfQ==";
-$channeltype="07";
+*/
+
 
    $data= [
 	   		"bizType"=>$bizType,
@@ -139,7 +145,7 @@ $channeltype="07";
 		//echo "<br />b64 :<br />".$b64."<br />";
 		//echo "<br /><br />";
 		//$sig = ["signature"=>$b64];
-		//echo "Signature : ". $b64;
+		echo "<br />Signature : ". $b64;
 		//$data = array_merge($data,$sig);
     	$keys = array_keys( $orig );
     	$keys[ array_search( "accNo", $keys ) ] = "signature";
@@ -187,10 +193,14 @@ $channeltype="07";
 
 		//echo $strData;
 
+	echo "Static String ############################################################################";
 
+/*
+	$strData= "bizType=000000&txnSubType=01&orderId=20190717132446&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=tNetk1PgMyQCAm3Ak%2BqpXOxvhUyKjI1BvYMezXS0H3BYwM6pp7zw1PkaChQUtH%2FILhYWJfjyh2y1PZwoZeI%2FKLaLM1hddeGRWhzlnHb7NPj5I1Ew3%2F0XAfBSo2%2B%2BBoVc2LFeSPDILzpVtlvHqXLeGVvg8tlGr0jt4d1l8zx9KtKgG7t5m4J53bVYexP%2BHelonfuuwEmyV%2FCi%2B%2FMlHHYuIDepO2JuAcZTUAK67VmYCJWtXjSZ38anl%2ByRvQu%2Bp%2Fzu%2BlHIVEv5tojnCsFy8MdjCIQm%2BQ53Z8Wjala1G3fafAukrdN3v4AHEu87fRUJrucym%2F9JNROiE5yPH%2FD%2Fghkk8Q%3D%3D&accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV%2Bns2oJqGm5tthIpgI%2BZ%2BxxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4%2Bh644Akrmb8cUeeK1%2FTwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK%2BQ3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B%2BrTAPwFI1Oz7swDrcCkbUXiQIsW%2Bo347SasU4DgDLCR2M%2FNZ0pBt0QGsa6NpccB%2FK9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190717132446&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000";
+*/
 
-	/*	$strData= "bizType=000000&txnSubType=01&orderId=20190717132446&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=tNetk1PgMyQCAm3Ak%2BqpXOxvhUyKjI1BvYMezXS0H3BYwM6pp7zw1PkaChQUtH%2FILhYWJfjyh2y1PZwoZeI%2FKLaLM1hddeGRWhzlnHb7NPj5I1Ew3%2F0XAfBSo2%2B%2BBoVc2LFeSPDILzpVtlvHqXLeGVvg8tlGr0jt4d1l8zx9KtKgG7t5m4J53bVYexP%2BHelonfuuwEmyV%2FCi%2B%2FMlHHYuIDepO2JuAcZTUAK67VmYCJWtXjSZ38anl%2ByRvQu%2Bp%2Fzu%2BlHIVEv5tojnCsFy8MdjCIQm%2BQ53Z8Wjala1G3fafAukrdN3v4AHEu87fRUJrucym%2F9JNROiE5yPH%2FD%2Fghkk8Q%3D%3D&accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV%2Bns2oJqGm5tthIpgI%2BZ%2BxxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4%2Bh644Akrmb8cUeeK1%2FTwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK%2BQ3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B%2BrTAPwFI1Oz7swDrcCkbUXiQIsW%2Bo347SasU4DgDLCR2M%2FNZ0pBt0QGsa6NpccB%2FK9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190717132446&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000";
-	*/
+	
+/*
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -215,6 +225,7 @@ $channeltype="07";
 
 		echo "result <br />".$output;
 
+*/
 
 		//var_dump($output);
 
