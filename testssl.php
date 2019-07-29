@@ -7,11 +7,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
-$data = 
-/*bizType=000000&txnSubType=01&orderId=20190715185304&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=TJE9Nz5XWux%2Bw5gXWb51Bun2pMBa%2BC2jBpxKzxQJicAw9SNF1FfRRjMdLocTbuPvRKrYwHH0MGJs%2BqQcSvL47Yb%2B6ZNWrk%2F79Bnmf0YNcwMQNmer0Sd0%2BcS3gLTzB6PI3bHmJI2A7sGhY96UA%2BYyGQn2xdoWeatt9lRmtspCKmcNqsWLAuc3JowZX1tKpsIGnvmW74j0HqBdTDazKJUH6%2BQ4aPod%2B6w28QoUor65Dt0zFUHIaVA%2FmMfRkLyvemSF7COGhv4wC1Y1FtdxpskB5DBV3znJ4TYj01m8NEWpN%2BEXkbuLcOYxjlsyQuT9dUh8W7DorWc%2FJWxfXLzCBaiL7Q%3D%3D&accNo=rb53Iomfgo4tKTFLT65OjbpWfsKT5v9C4S9DlGviiXKpfbqUbC68F4uBLqV3g%2BNMFlur9eFWz81x%2FLVNfubtnhojpSkrQ%2FkZ2BvpaXIPM45uWUHyHBgZ8a1I1f8cTeF0Pbk6A2tRY7Xgb3OS8B0uiqlp5Bijj5%2Bykxu70tYMwGUEU4spkWTLZn%2FHvPk5RdAhA79fvwInU7gX0B3cdf4KPNKG11q%2F8KmHJmAXsQNtx%2BSPqDA06dvp1ATBx3qgVaEXx5bpsoBHFgTO0I2LcqngGHJU2IAfxREfUdfQkrBAXw41YpVoSlcJF7YV9%2Bqr0NYJdX6qegVVLgG3IiBIMKlGnQ%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190715185304&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000*/
-	
-/*{bizType=000000, txnSubType=01, orderId=20190712171208 , backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse, accNo=BUBHjllhN2lfUh+lUCDHsIHVxssi2P1bVSZjX6CgnsFsRF8pyqs+RA4qBNw3ZwV31rnTSgXu7FJqbBgRkvX49pqyfy+786KWozxmX6VNWFPEa5SZfTtxfRCWSPpGUQjRXtEv5ve1Mr4YPmZzEIp5/jcH9gR2s3dee3Lv5mT7lcnBLll5BpIr+BDnw9VoTimj2x4xjT2Ijqh4Ip/JK58z/M9DPfogsiV/Cro85BEwLcFLXpMM84pwgBP0fADTeL4JJQ9gCW1ihVmNRAE/Wz1UiBkpxlbisUzt3hqf8WXKPojU06ZuseactB2us4dxonYYfQa7bFKPuvNaS2Rp2lbXfg==, customerInfo=e3Ntc0NvZGU9MTExMTExfQ==, txnType=01, channelType=07, encoding=UTF-8, version=5.1.0, accessType=0, encryptCertId=68759622183, txnTime=20190712171208 , merId=000000070000017, payTimeout=, currencyCode=156, signMethod=01, txnAmt=1000 }	
-*/
+$data = "";
 $pass = "000000";
 $encSuccess = false;
 
@@ -26,9 +22,9 @@ if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_
     $keyData = openssl_pkey_get_details($publickey);
     $pubkey=$keyData['key'];
     $card="6216261000000000018";
-    openssl_public_encrypt($card, $encStr, $pubkey, OPENSSL_PKCS1_OAEP_PADDING);   
-    $out = base64_encode($encStr);
-    //echo "encrypted string :::::".$out;
+    openssl_public_encrypt($card, $accNo, $pubkey);   
+    $accNo = base64_encode($accNo);
+    echo "encrypted string :::::<br />".$accNo. "<br />";
 }
 else{
     echo "Error: Unable to read the cert file\n";
@@ -46,27 +42,21 @@ $signature="";
 $customerInfo = "e3Ntc0NvZGU9MTExMTExfQ==";
 $txntype="01";
 $channeltype="07";
-certId="69629715588";
+$certId="69629715588";
 $encoding="UTF-8";
 $version = "5.1.0";
 $accessType="0";
 $encryptedCertId = "68759622183";
+$txnTime = "20190725090156";
 
 $merchantID="000000070000017";
 $currencyCode="156";
-//$payTimeOut
-//$backUrl="https://165.227.173.79/upop/back_notify.php";
 $signMethod="01";
 $txnAmt ="1000";
 
-//$txnTime = "20190725090156";
 //$qryid = "777290058110048";
 
 
-
-/*
-$accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==";
-*/
 
 
    $data= [
@@ -82,8 +72,8 @@ $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwx
 	        "encoding"=>$encoding,
 	   		"version"=>$version,
             "accessType"=>$accessType,
-	   		"encryptCertId"=>$encryptCertId,
-	   		"txnTime"=>$txntime,
+	   		"encryptCertId"=>$encryptedCertId,
+	   		"txnTime"=>$txnTime,
             "merId"=>$merchantID,
             "currencyCode"=>$currencyCode,
 	        "signMethod" =>$signMethod, 
@@ -93,7 +83,7 @@ $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwx
 	   
       //      "fronturl"=>$frontUrl,
 			$orig = $data;
-			ksort($data);
+	//		ksort($data);
 			$str="";
 		 	foreach($data as $key => $value) {
 				$str.= $key."=";
@@ -104,6 +94,7 @@ $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwx
 			$len = strlen($str);
 			$len -=1;
 			$str = substr($str, 0, $len);
+			$accNo = "";
 			//echo "<br /> data to sign<br />". $str;
 
 /*
@@ -111,12 +102,12 @@ $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwx
 */
 		//echo "string to be signed: ".$str;
         if ($encSuccess) {
-            $publickey = openssl_pkey_get_public($encfile);
+/*            $publickey = openssl_pkey_get_public($encfile);
             $keyData = openssl_pkey_get_details($publickey);
 			$key=$keyData['key'];
             $card="6216261000000000018";
-            openssl_public_encrypt($card, $encStr, $key, OPENSSL_PKCS1_OAEP_PADDING);   
-            //echo "encrypted string :::::".$encStr;
+            openssl_public_encrypt($card, $accNo, $key); */  
+            echo "<br />encrypted string :::::".$accNo;
         }
         else{
             echo "error in public key";
@@ -193,7 +184,6 @@ $accNo = "LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwx
 
 		//echo $strData;
 
-	echo "Static String ############################################################################";
 
 /*
 	$strData= "bizType=000000&txnSubType=01&orderId=20190717132446&backUrl=http%3A%2F%2F222.222.222.222%3A8080%2FACPSample_WuTiaoZhuan_Token%2FbackRcvResponse&signature=tNetk1PgMyQCAm3Ak%2BqpXOxvhUyKjI1BvYMezXS0H3BYwM6pp7zw1PkaChQUtH%2FILhYWJfjyh2y1PZwoZeI%2FKLaLM1hddeGRWhzlnHb7NPj5I1Ew3%2F0XAfBSo2%2B%2BBoVc2LFeSPDILzpVtlvHqXLeGVvg8tlGr0jt4d1l8zx9KtKgG7t5m4J53bVYexP%2BHelonfuuwEmyV%2FCi%2B%2FMlHHYuIDepO2JuAcZTUAK67VmYCJWtXjSZ38anl%2ByRvQu%2Bp%2Fzu%2BlHIVEv5tojnCsFy8MdjCIQm%2BQ53Z8Wjala1G3fafAukrdN3v4AHEu87fRUJrucym%2F9JNROiE5yPH%2FD%2Fghkk8Q%3D%3D&accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV%2Bns2oJqGm5tthIpgI%2BZ%2BxxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4%2Bh644Akrmb8cUeeK1%2FTwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK%2BQ3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B%2BrTAPwFI1Oz7swDrcCkbUXiQIsW%2Bo347SasU4DgDLCR2M%2FNZ0pBt0QGsa6NpccB%2FK9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw%3D%3D&customerInfo=e3Ntc0NvZGU9MTExMTExfQ%3D%3D&txnType=01&channelType=07&certId=69629715588&encoding=UTF-8&version=5.1.0&accessType=0&encryptCertId=68759622183&txnTime=20190717132446&merId=000000070000017&currencyCode=156&signMethod=01&txnAmt=1000";
