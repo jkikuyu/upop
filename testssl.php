@@ -1,11 +1,13 @@
 <?php
-
+require_once('classesAutoload.php');
+include('Crypt/RSA.php');
 $url = 'https://gateway.test.95516.com/gateway/api/backTransReq.do';
 $port = 443;
 $timeout = 30;
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
+
 
 $data = "";
 $pass = "000000";
@@ -15,7 +17,17 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
     echo "Error: Unable to read the cert file\n";
     exit;
 }
-if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
+
+$rsa = new Crypt_RSA();
+$rsa->loadKey('file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer'); // public key
+$card="6216261000000000018";
+
+//$plaintext = '...';
+
+$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+$ciphertext = $rsa->encrypt($card);
+echo "cipher text ". $ciphertext
+/*if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
 	//echo "encryption cert";
 	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
@@ -29,7 +41,7 @@ if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_
 else{
     echo "Error: Unable to read the cert file\n";
     exit;
-}
+}*/
 
 
 $headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
@@ -124,7 +136,7 @@ $txnAmt ="1000";
 			$privateKey = $certs['pkey'];
 			if (openssl_sign ( $utf8_1 , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
 				$b64 = base64_encode($signature);
-				echo " base 64 :" . $b64;
+				//echo " base 64 :" . $b64;
 				//$final = unpack('c*', $b64);
 				//print_r($final);
 
@@ -136,7 +148,7 @@ $txnAmt ="1000";
 		//echo "<br />b64 :<br />".$b64."<br />";
 		//echo "<br /><br />";
 		//$sig = ["signature"=>$b64];
-		echo "<br />Signature : ". $b64;
+		//echo "<br />Signature : ". $b64;
 		//$data = array_merge($data,$sig);
     	$keys = array_keys( $orig );
     	$keys[ array_search( "accNo", $keys ) ] = "signature";
