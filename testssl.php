@@ -1,6 +1,6 @@
 <?php
 require_once('classesAutoload.php');
-include('Crypt/RSA.php');
+use phpseclib\Crypt;
 $url = 'https://gateway.test.95516.com/gateway/api/backTransReq.do';
 $port = 443;
 $timeout = 30;
@@ -18,15 +18,15 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
     exit;
 }
 
-$rsa = new Crypt_RSA();
+$rsa = new \phpseclib\Crypt\RSA();
 $rsa->loadKey('file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer'); // public key
 $card="6216261000000000018";
 
 //$plaintext = '...';
 
-$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+$rsa->setEncryptionMode(0);
 $ciphertext = $rsa->encrypt($card);
-echo "cipher text ". $ciphertext
+echo "cipher text ". $ciphertext;
 /*if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
 	//echo "encryption cert";
 	$encSuccess = true;
@@ -44,6 +44,7 @@ else{
 }*/
 
 
+/*
 $headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
 $bizType="000000";
 
@@ -65,13 +66,14 @@ $merchantID="000000070000017";
 $currencyCode="156";
 $signMethod="01";
 $txnAmt ="1000";
+*/
 
 //$qryid = "777290058110048";
 
 
 
 
-   $data= [
+ /*  $data= [
 	   		"bizType"=>$bizType,
 		   	"txnSubType"=>$txnsubtype,
 	   		"orderId"=>$orderid,
@@ -107,18 +109,19 @@ $txnAmt ="1000";
 			$len -=1;
 			$str = substr($str, 0, $len);
 			$accNo = "";
-			//echo "<br /> data to sign<br />". $str;
+*/			//echo "<br /> data to sign<br />". $str;
 
 /*
 			$str = "accNo=LTMc6ZBnSS4gvYg81Q6MPJvDCwNi2laQ8o5QPAH5wV+ns2oJqGm5tthIpgI+Z+xxVwNHwxUzzn3UhRa3jeyoSCad2BgnYSgJnVQOjn3kSMIgKhte279Tlg4+h644Akrmb8cUeeK1/TwYI2urDSvSy3eymQ6oORSy3RfQJbWcxEK+Q3qgIW2L1M63PSU8tw9OORYrAX7hYqR6B+rTAPwFI1Oz7swDrcCkbUXiQIsW+o347SasU4DgDLCR2M/NZ0pBt0QGsa6NpccB/K9VzDuLkehvgyWlaGmwnAn87mK9H2QBUsrEiaYvRNio3EiCyOxtkziy7iHBZDEVCW1nBkgLkw==&accessType=0&backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse&bizType=000000&certId=69629715588&channelType=07&currencyCode=156&customerInfo=e3Ntc0NvZGU9MTExMTExfQ==&encoding=UTF-8&encryptCertId=68759622183&merId=000000070000017&orderId=20190717132446&signMethod=01&txnAmt=1000&txnSubType=01&txnTime=20190717132446&txnType=01&version=5.1.0";
 */
 		//echo "string to be signed: ".$str;
+/*
         if ($encSuccess) {
-/*            $publickey = openssl_pkey_get_public($encfile);
+            $publickey = openssl_pkey_get_public($encfile);
             $keyData = openssl_pkey_get_details($publickey);
 			$key=$keyData['key'];
             $card="6216261000000000018";
-            openssl_public_encrypt($card, $accNo, $key); */  
+            openssl_public_encrypt($card, $accNo, $key);   
             echo "<br />encrypted string :::::".$accNo;
         }
         else{
@@ -168,6 +171,7 @@ $txnAmt ="1000";
             }
         $strData = substr($strData,0,strlen($strData)-1);
 		echo "<br />string to send :<br />".$strData;
+*/
 
 //		$context = stream_context_create( array (
 //			
