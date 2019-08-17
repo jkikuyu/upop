@@ -13,20 +13,6 @@ $data = "";
 $pass = "000000";
 $encSuccess = false;
 
-if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
-    echo "Error: Unable to read the cert file\n";
-    exit;
-}
-
-$rsa = new \phpseclib\Crypt\RSA();
-$rsa->loadKey('file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer'); // public key
-$card="6216261000000000018";
-
-//$plaintext = '...';
-
-$rsa->setEncryptionMode(0);
-$ciphertext = $rsa->encrypt($card);
-echo "cipher text ". $ciphertext;
 /*if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
 	//echo "encryption cert";
 	$encSuccess = true;
@@ -247,5 +233,30 @@ echo "                      ".$data;
 
             //init curl
 
+function decryptCard(){
+	if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
+		echo "Error: Unable to read the cert file\n";
+		exit;
+	}
+	$package= "spBkUe7A+BuXIsd/oWiH8Mcjvmsvv0XbZWd0qLLlqiaELWs9N8vTAMwi8wjRiF74IhGN1vI0MOZOAHK7FMAc2zFFnkMFJxPngyX0aG9+b9FcRC/gTClRIW7GRMY14A13rTTCht+uQ019PdNZLyBxbpQCOroWPSc2cFV0VXnQHRIWBHP9w/livUkW8oE0iKclpR8T3dbuH4L/pyql1/nO9OK/34Qtnz//KBkFv4u/wfegfcqoYBX6XfvzJDzbQWMwiyNtywPFy4TZv2felFKKuucxsPoCEHcvBJuduv3nIUD3FMxClg2uZGiCSGsc1UuSljOPoubITsYMSPD/9xP3cw==";
+	openssl_pkcs12_read($cert_store, $certs, $pass);
+	$res=$certs['pkey'];
+	//openssl_pkey_get_private($privKey, "phrase")
+	//$res = openssl_get_privatekey($certs,$pass);
+	$b64dec = base64_decode($package); 
+
+	openssl_private_decrypt($b64dec,$decrypted,$res);
+	//$rsa->loadKey('file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer'); // public key
+	//$card="6216261000000000018";
+
+	//$plaintext = '...';
+
+	//$rsa->setEncryptionMode(0);
+	//echo "base 64" . $b64dec;
+	//$decrypted = $rsa->decrypt($b64dec);
+	//$ciphertext = $rsa->encrypt($card);
+	echo "plain text ". $decrypted;
+
+}
 
 ?>
