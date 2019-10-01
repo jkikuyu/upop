@@ -26,8 +26,8 @@ $encoding="UTF-8";
 $version = "5.1.0";
 $accessType="0";
 $encryptedCertId = "68759622183";
-$txnTime = "20190828125705";
-$orderid ="20190828125705";
+$txnTime = "20191001185834";
+$orderid ="20191001185834";
 
 $merchantID="000000070000017";
 $currencyCode="156";
@@ -39,11 +39,14 @@ if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_
 	//echo "encryption cert";
 	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
+	
     $keyData = openssl_pkey_get_details($publickey);
     $pubkey=$keyData['key'];
+	//echo $pubkey;
     $card="6216261000000000018";
-    openssl_public_encrypt($card, $accNo, $pubkey);   
+    openssl_public_encrypt($card, $accNo, $pubkey,OPENSSL_PKCS1_PADDING);   
     $accNo = base64_encode($accNo);
+	//echo $accNo;
 }
 else{
     echo "Error: Unable to read the cert file\n";
@@ -75,7 +78,7 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 		   	"txnAmt"=>$txnAmt
 		   ];
 
-
+			ksort($data);
 
  			$orig = $data;
 			$str="";
@@ -89,9 +92,9 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 			$len -=1;
 			$str = substr($str, 0, $len);
 
-		//echo "string to be signed: ".$str;
+		echo "string to be signed: ".$str;
 
-		if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
+			if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
 			
 			$utf8=   utf8_encode ($str);
 			//echo "<br />UTF 8: <br />". $utf8;
@@ -99,8 +102,8 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 			
 			//echo "<br /><br />" .$sha256;
 			$utf8_1=   utf8_encode ($sha256);
+			echo "<br />utf8: ". $utf8_1. "<br />";
 			$privateKey = $certs['pkey'];
-			
 			if (openssl_sign ( $utf8_1 , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
 				$b64 = base64_encode($signature);
 
@@ -124,8 +127,9 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 
             }
         $strData = substr($strData,0,strlen($strData)-1);
+
 		echo "<br />string to send :<br />".$strData;
-		$curl = curl_init();
+	$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
@@ -151,6 +155,7 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 
 
 
+
 function decryptCard($package, $cert_store){
 	$pass = "000000";
 	openssl_pkcs12_read($cert_store, $certs, $pass);
@@ -161,5 +166,6 @@ function decryptCard($package, $cert_store){
 	echo "plain text ". $decrypted;
 
 }
+
 
 ?>
