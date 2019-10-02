@@ -26,8 +26,8 @@ $encoding="UTF-8";
 $version = "5.1.0";
 $accessType="0";
 $encryptedCertId = "68759622183";
-$txnTime = "20191001185834";
-$orderid ="20191001185834";
+$txnTime = "20191002123618";
+$orderid ="20191002123618";
 
 $merchantID="000000070000017";
 $currencyCode="156";
@@ -92,7 +92,7 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 			$len -=1;
 			$str = substr($str, 0, $len);
 
-		echo "string to be signed: ".$str;
+		//echo "string to be signed: ".$str;
 
 			if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
 			
@@ -102,9 +102,12 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 			
 			//echo "<br /><br />" .$sha256;
 			$utf8_1=   utf8_encode ($sha256);
-			echo "<br />utf8: ". $utf8_1. "<br />";
+			//echo "<br />utf8: ". $utf8_1. "<br />";
 			$privateKey = $certs['pkey'];
-			if (openssl_sign ( $utf8_1 , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
+			$digest = openssl_digest ($utf8_1,"sha256");
+				echo "digist :".$digest. "<br />";
+			if (openssl_sign ( $digest , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
+				echo "signature: " .$signature . "<br />";
 				$b64 = base64_encode($signature);
 
 			}
@@ -116,7 +119,7 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
     	$keys[ array_search( "accNo", $keys ) ] = "signature";
 		$data=array_combine( $keys, $orig);
 		$data["signature"]=$b64;
-
+		ksort($data);
 		$strData=""; 
             foreach($data as $key => $value) {
 				$strData.= $key."=";
@@ -128,7 +131,8 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
             }
         $strData = substr($strData,0,strlen($strData)-1);
 
-		echo "<br />string to send :<br />".$strData;
+		//echo "<br />string to send :<br />".$strData."<br/>";
+
 	$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
