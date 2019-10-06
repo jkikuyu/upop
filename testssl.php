@@ -1,5 +1,5 @@
 <?php
-require_once('classesAutoload.php');
+//require_once('classesAutoload.php');
 $headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
@@ -15,7 +15,6 @@ $data = "";
 $pass = "000000";
 $encSuccess = false;
 $txnsubtype="01";
-$orderid ="20190725090156";
 $backUrl="http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse";
 $signature="";
 $customerInfo = "e3Ntc0NvZGU9MTExMTExfQ==";
@@ -26,8 +25,8 @@ $encoding="UTF-8";
 $version = "5.1.0";
 $accessType="0";
 $encryptedCertId = "68759622183";
-$txnTime = "20191002123618";
-$orderid ="20191002123618";
+$txnTime = "20191007000620";
+$orderid ="20191007000620";
 
 $merchantID="000000070000017";
 $currencyCode="156";
@@ -35,7 +34,8 @@ $signMethod="01";
 $txnAmt ="1000";
 $b64 = "";
 
-if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
+          
+if ($encfile = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/certs/test/acp_test_enc.cer")) {
 	//echo "encryption cert";
 	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
@@ -48,15 +48,16 @@ if ($encfile = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_
     $accNo = base64_encode($accNo);
 	//echo $accNo;
 }
+
 else{
     echo "Error: Unable to read the cert file\n";
     exit;
 }
-if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
+
+if (!$cert_store = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/certs/test/acp_test_sign.pfx")) {
 	echo "Error: Unable to read the cert file\n";
 	exit;
 }
-
   $data= [
 	   		"bizType"=>$bizType,
 		   	"txnSubType"=>$txnsubtype,
@@ -77,10 +78,9 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 	        "signMethod" =>$signMethod, 
 		   	"txnAmt"=>$txnAmt
 		   ];
-
-			ksort($data);
-
  			$orig = $data;
+            ksort($data);
+
 			$str="";
 		 	foreach($data as $key => $value) {
 				$str.= $key."=";
@@ -91,44 +91,33 @@ if (!$cert_store = file_get_contents("file:///home/jkikuyu/ipay/upop/certs/test/
 			$len = strlen($str);
 			$len -=1;
 			$str = substr($str, 0, $len);
-
-		//echo "string to be signed: ".$str;
-
+            echo "<br />string to send :<br />".$str."<br/>";
+            $hashed = hash ("sha256",$str);
 			if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
-			
-			$utf8=   utf8_encode ($str);
-			//echo "<br />UTF 8: <br />". $utf8;
-			$sha256 = hash ("sha256",$utf8);
-			
-			//echo "<br /><br />" .$sha256;
-			$utf8_1=   utf8_encode ($sha256);
-			//echo "<br />utf8: ". $utf8_1. "<br />";
-			$privateKey = $certs['pkey'];
-			$digest = openssl_digest ($utf8_1,"sha256");
-				echo "digist :".$digest. "<br />";
-			if (openssl_sign ( $digest , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
-				echo "signature: " .$signature . "<br />";
-				$b64 = base64_encode($signature);
+                $privateKey = $certs['pkey'];
+  
+                if (openssl_sign ( $hashed , $signature ,  $privateKey, "sha256WithRSAEncryption" )){
+                    $b64 = base64_encode($signature);
+    
 
-			}
-			else{
-				echo "error in signing";
-			}
-		}
-		$keys = array_keys( $orig );
-    	$keys[ array_search( "accNo", $keys ) ] = "signature";
-		$data=array_combine( $keys, $orig);
+                }
+                else{
+                    echo "error in signing";
+                }
+            }
+
+
 		$data["signature"]=$b64;
 		ksort($data);
 		$strData=""; 
-            foreach($data as $key => $value) {
-				$strData.= $key."=";
-					
-					$strData.= urlencode($value);
-				
-					$strData.="&";
+        foreach($data as $key => $value) {
+            $strData.= $key."=";
 
-            }
+                $strData.= urlencode($value);
+
+                $strData.="&";
+
+        }
         $strData = substr($strData,0,strlen($strData)-1);
 
 		//echo "<br />string to send :<br />".$strData."<br/>";
