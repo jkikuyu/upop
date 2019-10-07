@@ -30,7 +30,7 @@ final class CertUtils{
     
 	private static $keystore = null;
 	/** Encryption public key and certificate for sensitive information */
-	private static $encryptCert = null;
+	private $encryptCert = null;
 	/** Encryption public key for magnetic tracks */
 	private static $encryptTrackKey = null;
 	/** Verify the messages, signatures, and certificates returned from China UnionPay. */
@@ -40,6 +40,8 @@ final class CertUtils{
 	/** Authenticate the signatures of root certificates */
 	private static $rootCert = null;
     
+	private static $instance;
+
 	private $frontRequestUrl;
 	
 	
@@ -116,11 +118,21 @@ final class CertUtils{
 */
 
 	public function __construct(){
-		echo "test";
-		init();
+        $signCertPath=getenv('UPOP.SIGNCERT.PATH');
+        $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
+        $signCertType=getenv('UPOP.SIGNCERT.TYPE');
+        $encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
+        $middleCertPath=getenv('UPOP.MIDDLECERT.PATH');
+        $rootCertPath=getenv('UPOP.ROOTCERT.PATH');
+		$alg = getenv('UPOP.ALG');
+		$logfile = Utils::getLogFile();
+		$log = new Logger('Upop');
+		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+		//echo "encrypt file". $encryptCert;
 
 	}
-
+	
+/*
     public static function init(){
         $signCertPath=getenv('UPOP.SIGNCERT.PATH');
         $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
@@ -135,8 +147,15 @@ final class CertUtils{
 		echo "encrypt file". $encryptCert;
 
     }
-
-    public static function initCert(){
+*/
+	  public static function getInstance()
+	  {
+		if ( is_null( self::$instance ) )
+		{
+		  self::$instance = new self();
+		}
+		return self::$instance;
+	  }    public static function initCert(){
 		$success =false;
         $signCertPath=getenv('UPOP.SIGNCERT.PATH');
         $signCertType=getenv('UPOP.SIGNCERT.TYPE');
@@ -203,7 +222,7 @@ final class CertUtils{
 	}
     
 public static function getPublicKey(){
-	self::$encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
+	echo self::getInstance()->encryptCert;
 	if ($encrypted = file_get_contents(self::$encryptCert)) {
         $publickey = openssl_pkey_get_public($encrypted);
         $keyData = openssl_pkey_get_details($publickey);

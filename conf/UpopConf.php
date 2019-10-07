@@ -50,10 +50,10 @@ class UpopConf{
         //$this->payTimeOut=getenv('UPOP.PAYTIMEOUT');
         $this->smsCode=getenv('UPOP.SMSCODE');
 
-        $this->frontUrl=getenv('UPOP.FRONTURL');
-        $this->backUrl=getenv('UPOP.BACKURL');
+        $this->backTransUrl=getenv('UPOP.BACKTRANSURL');
         $this->frontTransUrl=getenv('UPOP.FRONTTRANSURL');
 		$this->certId = getenv('UPOP.CERTID');
+		$this->port = getenv('UPOP.PORT');
 
     }
     
@@ -67,14 +67,12 @@ class UpopConf{
             "channelType"=>$this->channelType,
             "merId"=>$this->merId,
             "currencyCode"=>$this->currencyCode,
-            "backUrl"=>$this->backUrl,
-            "frontUrl"=>$this->frontUrl,
             "certId" => $this->certId
         );
     
         return $content;
     }
-    
+
     public function getRequiredFlds(){
         $required_data = [
             'version',
@@ -89,8 +87,6 @@ class UpopConf{
             'orderid',
             'txnTime',
             'currencyCode',
-            'backUrl',
-            'frontUrl',
             'txnAmt',
             'certId'
         ];

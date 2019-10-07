@@ -40,7 +40,7 @@ if ($isRequestJson){
 		switch ($json->type){
 			case UpopConf::PURCHASE:
 				$var = 'Purchase';
-				$url = $upopconf->frontTransUrl;
+				$url = $upopconf->backTransUrl;
 				// purchase
 
 				break;
@@ -82,11 +82,12 @@ if ($isRequestJson){
 	}
 	$custInfo = new CustomerInfo();
 	$card = $json->card;
-	$customerInfo = ["smsCode"=>"123456"];
+	$customerInfo = ["smsCode"=>  $upopconf->smsCode];
 	$encryptedCard = $custInfo->encryptCard($card);
-	$encrptedCustomerInfo =  $custInfo->encryptCustomerInfo($customerInfo,$json->card);
-	$customerData = ["accNo"=>$encryptedCard, "customerInfo"=>$encrptedCustomerInfo,"payTimeout"=>""];
-	echo "encrypted card: ".$encryptedCard;
+	$encryptedCertId = $custInfo->encryptedCertId();
+	$encryptedCustomerInfo =  $custInfo->encryptCustomerInfo($customerInfo,$json->card);
+	$customerData = ["accNo"=>$encryptedCard, "customerInfo"=>$encryptedCustomerInfo];
+	//echo "encrypted card: ".$encryptedCard;
 	//use __NAMESPACE__ . '\\' . $var in variable before instantiating
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
@@ -96,20 +97,20 @@ if ($isRequestJson){
 	$requiredFlds = $upopconf->getRequiredFlds();
 	
 	$sort = ksort($merged);
-	
+	//var_dump($merged);
 	$signature = $classobj->processRequest($merged, $requiredFlds);
-
+	//echo "signature: ". $signature;
 
 
 	//$certID = $upopconf->certid;
 	//$certDetail = ["signature"=>$signature,"certId"=>$certID];
 	$certDetail = ["signature"=>$signature];
 	$merged_final= array_merge($merged,$certDetail);
-	
+	//print_r($merged_final);
 
 	// $sorted = ksort($merged_final);
-
-	$classobj->initiateRequest($merged_final,$url);
+	$port = $upopconf->port;
+	$classobj->initiateRequest($merged_final,$url,$port);
 	
 }
 

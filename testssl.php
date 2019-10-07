@@ -35,13 +35,16 @@ $txnAmt ="1000";
 $b64 = "";
 
           
-if ($encfile = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/certs/test/acp_test_enc.cer")) {
+if ($encfile = file_get_contents("/home/jkikuyu/ipay/upop/certs/test/acp_test_enc.cer")) {
 	//echo "encryption cert";
 	$encSuccess = true;
     $publickey = openssl_pkey_get_public($encfile);
-	
+	//$data=openssl_x509_parse($encfile,true);
+	//echo "serial :".$data['serialNumber'];
     $keyData = openssl_pkey_get_details($publickey);
     $pubkey=$keyData['key'];
+		print_r($keyData);
+
 	//echo $pubkey;
     $card="6216261000000000018";
     openssl_public_encrypt($card, $accNo, $pubkey,OPENSSL_PKCS1_PADDING);   
@@ -54,7 +57,7 @@ else{
     exit;
 }
 
-if (!$cert_store = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/certs/test/acp_test_sign.pfx")) {
+if (!$cert_store = file_get_contents("/home/jkikuyu/ipay/upop/certs/test/acp_test_sign.pfx")) {
 	echo "Error: Unable to read the cert file\n";
 	exit;
 }
@@ -91,7 +94,7 @@ if (!$cert_store = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/
 			$len = strlen($str);
 			$len -=1;
 			$str = substr($str, 0, $len);
-            echo "<br />string to send :<br />".$str."<br/>";
+           // echo "<br />string to sign :<br />".$str."<br/>";
             $hashed = hash ("sha256",$str);
 			if (openssl_pkcs12_read($cert_store, $certs, $pass)) {
                 $privateKey = $certs['pkey'];
@@ -120,8 +123,10 @@ if (!$cert_store = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/
         }
         $strData = substr($strData,0,strlen($strData)-1);
 
-		//echo "<br />string to send :<br />".$strData."<br/>";
+		echo "<br />string to send :<br />".$strData."<br/>";
 
+
+/*
 	$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -145,6 +150,8 @@ if (!$cert_store = file_get_contents("file:///home/nimda/Documents/lj/ipay/upop/
 		$output = curl_exec($curl);
 
 		echo "result <br />".$output;
+
+*/
 
 
 

@@ -13,6 +13,7 @@ class PaymentReq implements IPaymentReq{
 	private $txnTime;
 	private $txnAmt;
 **/
+
 	public function assignValues($dataRecd){
 		/*
 		 * funciton to validated values 
@@ -112,24 +113,61 @@ return $html;
 	public function makeRequest($requestData){
 		parent::makeRequest($requestData);
 	}
-    public function curlPost(stdClass $data, $url, array $headers){
+    public function curlPost(array $data, $url,$port){
+		$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
+		$request_time = new \DateTime();
+		$strData = "";
+		$output="";
+
 		if(!is_string($url)){
-			throw new InvalidArgumentException('URL must be a string');
+			throw new \InvalidArgumentException('URL must be a string');
 		}
 		else{
-			//request datetime
-			$request_time = new DateTime();
+			foreach($data as $key => $value) {
+				$strData.= $key."=";
+
+					$strData.= urlencode($value);
+
+					$strData.="&";
+
+			}
+			$strData = substr($strData,0,strlen($strData)-1);
+			echo "<br />string to send :<br />".$strData."<br/>";
+			echo "url :".$url;
 
 			//init curl
-			$curl = curl_init();
+	/*		$curl = curl_init();
 
-			//build json string
-			$data = json_encode($data);
+
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+			//set request headers
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($curl, CURLOPT_PORT, $port);
+
+			//request method is POST
+			curl_setopt($curl, CURLOPT_POST, 1);
+			//request body
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $strData);
+
+
+			//return transfer response as string to the $curl resource
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+			//output verbose info
+			curl_setopt($curl, CURLOPT_VERBOSE, 1);
+
+			$output = curl_exec($curl);
+
+			echo "result <br />".$output;
+*/
 
 			/**
 			 * CURL OPTIONS
 			 */
 			//set url
+/*
 			curl_setopt($curl, CURLOPT_URL, $url);
 
 			//set request headers
@@ -148,11 +186,13 @@ return $html;
 			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 
 			//request body
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $strData);
 
 			$output = curl_exec($curl);
+*/
 		}
-	}
+	return $output;
 
+	}
 }
 ?>
