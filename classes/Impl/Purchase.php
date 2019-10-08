@@ -20,7 +20,7 @@ class Purchase extends PaymentReq implements IPaymentType{
 	private $txnSubType;
 	public function __construct(){
 		$this->txntype=getenv('UPOP.PUR.TXNTYPE');
-		$this->txnSubType=getenv('UPOP.PUR.TXNSUBTYPE');
+		$this->txnSubType=getenv('UPOP.TXNSUBTYPE');
 	}
 
 	public function processRequest($merged_data=null, $requiredData=null){

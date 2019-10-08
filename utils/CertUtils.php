@@ -18,7 +18,7 @@ final class CertUtils{
     /** Type of signed certificate. */
     public $signCertType;
     /** Path of encrypted public key certificate. */
-    public $encryptCertPath;
+    //public $encryptCertPath;
     /** Authenticate the catalog of signed public key certificates. */
     public $validateCertDir;
     /** Read the catalog of specified signed certificates according to client codes. */
@@ -61,7 +61,6 @@ final class CertUtils{
 	/** Type of signed certificate. */
 	//private $signCertType;
 	/** Path of encrypted public key certificate. */
-	//private $encryptCertPath;
 	/** Authenticate the catalog of signed public key certificates. */
 	//private $validateCertDir;
 	/** Read the catalog of specified signed certificates according to client codes. */
@@ -148,14 +147,14 @@ final class CertUtils{
 
     }
 */
-	  public static function getInstance()
-	  {
-		if ( is_null( self::$instance ) )
-		{
+	  
+	public static function getInstance(){
+		if (is_null( self::$instance )){
 		  self::$instance = new self();
 		}
 		return self::$instance;
-	  }    public static function initCert(){
+	  }    
+	public static function initCert(){
 		$success =false;
         $signCertPath=getenv('UPOP.SIGNCERT.PATH');
         $signCertType=getenv('UPOP.SIGNCERT.TYPE');
@@ -221,20 +220,20 @@ final class CertUtils{
     return $b64;
 	}
     
-public static function getPublicKey(){
-	echo self::getInstance()->encryptCert;
-	if ($encrypted = file_get_contents(self::$encryptCert)) {
-        $publickey = openssl_pkey_get_public($encrypted);
-        $keyData = openssl_pkey_get_details($publickey);
-	    $key=$keyData['key'];
+public static function getEncryptCertPath(){
+	$encryptCert=getenv('UPOP.ENCRYPTCERT.PATH');
+	$encrypted="";
+	if ($enCertPath = file_get_contents($encryptCert)) {
+		
     }
     else{
         $log->error("unable to read cert file");
         throw new \Exception("Error: Unable to proceed\n");
      
     }
-    return $key;
+    return $enCertPath;
 }
+
 
    /* public static function initMiddleCert(){
         $success = false

@@ -12,17 +12,19 @@ class CustomerInfo extends PaymentReq implements ICustomerInfo{
 	}
 	
 	public function encryptCard($card_number){
-			$key= CertUtils::getInstance()->getPublicKey();
+		$encryptCert= CertUtils::getInstance()->getEncryptCertPath();
 
-		//$key = CertUtils::getPublicKey();
+        $publickey = openssl_pkey_get_public($encryptCert);
+        $keyData = openssl_pkey_get_details($publickey);
+	    $key=$keyData['key'];
 		openssl_public_encrypt($card_number, $enc, $key, OPENSSL_PKCS1_PADDING);   
     	$cardEnc = base64_encode($enc);
 		//echo "card enc: ".$cardEnc;
 	return $cardEnc;	
 	}
 	public function encryptedCertId(){
-		echo "encrypted cert file:". CertUtils::getInstance()->encryptCert;
-		$encryptCert = CertUtils::$encryptCert;
+		$encryptCert= CertUtils::getInstance()->getEncryptCertPath();
+		
 		$data=openssl_x509_parse($encryptCert,true);
 		$serialNo = $data['serialNumber'];
 		echo "encrypted cert id ". $serialNo;

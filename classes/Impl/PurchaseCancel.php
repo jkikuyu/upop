@@ -1,6 +1,6 @@
 <?php
 /*
- * @file    Purchase.php
+ * @file    PurchaseCancel.php
  * @author  Jude
  * @date    02/01/2019
  * @version $Revision$
@@ -15,13 +15,13 @@ require_once(dirname(__dir__).'/Interfaces/IPaymentType.php');
 require_once(dirname(__dir__).'/PaymentReq.php');
 
 
-class Purchase extends PaymentReq implements IPaymentType{
+class PurchaseCancel extends PaymentReq implements IPaymentType{
 	private $txntype;
 	private $txnSubType;
 	public function __construct(){
 
-		$this->txntype=getenv('UPOP.CANCEL.TXNTYPE');
-		$this->txnSubType=getenv('UPOP.CANCEL.TXNSUBTYPE');
+		$this->txntype=getenv('UPOP.PUR.CANCEL.TXNTYPE');
+		$this->txnSubType=getenv('UPOP.TXNSUBTYPE');
 	}
 
 	public function processRequest($merged_data=null, $requiredData=null){
@@ -54,19 +54,15 @@ class Purchase extends PaymentReq implements IPaymentType{
 		$strData = parent::convertToString($merged_final,$urlEncode);
 		return $strData;
 	}
-	public function initiateRequest($sorted, $url){
-		$html = parent::createHtml($sorted,url);
-		header("Content-type",
-				"application/x-www-form-urlencoded;charset=" . $sorted['encoding']);
-		echo $html;
+
+	public function initiateRequest(array $reqData, $url, $port){
+		
+		$response = parent::curlPost($reqData, $url, $port);
+		echo $response;
+
 
 		
 	}
-
-}
-
-		/* */
-	
 
 
 }

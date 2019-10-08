@@ -18,7 +18,7 @@ class PaymentReq implements IPaymentReq{
 		/*
 		 * funciton to validated values 
 		*/
-        $assVal = array("orderid"=>$dataRecd->orderId,
+        $assVal = array("orderId"=>$dataRecd->orderId,
             "txnTime"=>$dataRecd->txnTime,
 		    "txnAmt"=>$dataRecd->txnAmt
 		);
@@ -69,7 +69,7 @@ class PaymentReq implements IPaymentReq{
 
     }
 
-    
+
 function createHtml($sorted=null, $frontUrl){
 
 // foreach ($sorted as $key => $val) {
@@ -136,7 +136,7 @@ return $html;
 			echo "url :".$url;
 
 			//init curl
-	/*		$curl = curl_init();
+			$curl = curl_init();
 
 
 			curl_setopt($curl, CURLOPT_URL, $url);
@@ -161,7 +161,7 @@ return $html;
 			$output = curl_exec($curl);
 
 			echo "result <br />".$output;
-*/
+
 
 			/**
 			 * CURL OPTIONS

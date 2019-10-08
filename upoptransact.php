@@ -19,7 +19,7 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 //$dataRecd = file_get_contents('php://input');
-$dataRecd='{"type":"1", "card":"6216261000000000018","orderId":"1234567", "txnAmt":"1", "txnTime":"20190618233948"}';
+$dataRecd='{"type":"1", "card":"6216261000000000018","orderId":"20191008132716", "txnAmt":"1", "txnTime":"20191008132716"}';
 $isRequestJson = (json_decode($dataRecd) != NULL) ? true : false;
 $logfile = Utils::getLogFile();
 $log = new Logger('Upop');
@@ -86,7 +86,7 @@ if ($isRequestJson){
 	$encryptedCard = $custInfo->encryptCard($card);
 	$encryptedCertId = $custInfo->encryptedCertId();
 	$encryptedCustomerInfo =  $custInfo->encryptCustomerInfo($customerInfo,$json->card);
-	$customerData = ["accNo"=>$encryptedCard, "customerInfo"=>$encryptedCustomerInfo];
+	$customerData = ["accNo"=>$encryptedCard, 'encryptCertId'=>$encryptedCertId,'customerInfo'=>$encryptedCustomerInfo];
 	//echo "encrypted card: ".$encryptedCard;
 	//use __NAMESPACE__ . '\\' . $var in variable before instantiating
 	$class = __NAMESPACE__ . '\\' . $var;
