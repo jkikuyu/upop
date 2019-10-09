@@ -1,5 +1,5 @@
 <?php
-data = "txnType=01&respCode=11&channelType=07&currencyCode=156&merId=000000070000017&txnSubType=01&customerInfo=e3Ntc0NvZGU9MTExMTExfQ==&txnAmt=1000&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----
+$data = "txnType=01&respCode=11&channelType=07&currencyCode=156&merId=000000070000017&txnSubType=01&customerInfo=e3Ntc0NvZGU9MTExMTExfQ==&txnAmt=1000&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----
 MIIEQzCCAyugAwIBAgIFEBJJZVgwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv
 cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMTcxMTAxMDcyNDA4WhcN
@@ -24,6 +24,27 @@ MTh2w7cDd9h+6KoCN6AMI1Ly7MxRIhCbNBL9bzaxF9B5GK86ARY7ixkuDCEl4XCF
 JGxeoye9R46NqZ6AA/k97mJun//gmUjStmb9PUXA59fR5suAB5o/5lBySZ8UXkrI
 pp/iLT8vIl1hNgLh0Ghs7DBSx99I+S3VuUzjHNxL6fGRhlix7Rb8
 -----END CERTIFICATE-----&signMethod=01&accNo=Y7Fa1uby9YLbfZcbOS2kBuPdMExsOipa3I5Usf85xqxJnR/Ab8mj9o7i3d65/3fVwSQdey8EIDp0j85GciENEoKEakDMj1QyFj4UsIqfTjA0uvPPCSrnbDarfZN0XMaWgUGxDlsyD8nymKHxxRZAF0Dfapjge8qx3lmeyAc8ljRSk2vEeuBZsLoTRbOMpQULoEQE+I1O0u80fIpss3y12LM46YWfZ4edY7QG1zZKhFLaJbURVIYPovA9LzAqtiVVoij9HLIF9KtWX+KrMpcqQVAWJSyq6UeKgvx8XJ8BIo2bxH7HIiIRT9omY0mffv522b9uzjWxnad+YnG36hXdDA==&backUrl=http://222.222.222.222:8080/ACPSample_WuTiaoZhuan_Token/backRcvResponse&certId=69629715588&encoding=UTF-8&respMsg=[9100004]Signature verification failed&bizType=000000&encryptCertId=68759622183&signature=RIWiPiCtDdfQpoujjhGV2ZyS2AQzHmL9SqYOJdASGF9czR9zpV9kvXpffmtTqOliRKtnTe+pC8twfUhoJ1ZOoBDJHMdEXvpGrYWH0BQTaCGflsQkq/5CXWIxyUXVmiJKnadUeOKPxkVr/JZYJBaYUceteUDBBk8NNtHEMqktUemfrJeK4rk7M8bCtO1eRilcyoAmuPeg2ks/aRc3ARXMS8y9f8RjcC8+yVXQNc8ewm02SeIeGDE9JW7OLpqJInLfuy/wkTGkXcrJW/NJvi/I2fd3WNaR+UuapmSGH9YYjPoCXasThrRzucu/Gc/Xd3TdrZN+T8GU4PDNqBLZTLvYkw==&orderId=20191008171230&txnTime=20191008171230&accessType=0";
+
+$ares = explode("&",$data);
+//Svar_dump($ares);
+foreach( $ares as $item){
+	$temp = explode("=",$item);
+	$key=$temp[0];
+	$value=$temp[1];
+	$resp[$key] =  $value;
+	
+}
+
+foreach($resp as $key => $value ){
+   if (  $key==='signPubKeyCert'){
+	   $pubcertStr=$value;
+	   break;
+   }
+}
+print_r($pubcertStr);
+$cert = openssl_x509_parse($pubcertStr);
+if( $cert['validFrom_time_t'] > time() || $cert['validTo_time_t'] < time() )
+    echo "Certificate is expired.";
 
 //require_once('classesAutoload.php');
 /*$headers = ["Content-type:application/x-www-form-urlencoded;charset=UTF-8"];
