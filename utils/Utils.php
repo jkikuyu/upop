@@ -1,11 +1,17 @@
 <?php
 namespace UnionPay;
+
 use Dotenv\Dotenv;   
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 
 final class Utils{
+	private static $log;
+
     public static function validateRequest($raw_input, array $required_params){
-        $res_arr = null;
+
+		$res_arr = null;
         $res_obj = null;
         if($raw_input){
             foreach($required_params as $param){
@@ -105,6 +111,16 @@ final class Utils{
         }
 
     }
+    public static function infoMsg($info){
+        self::$log->info($info);
+
+    }
+    public static function errMsg($error){
+
+        self::$log->Error($error);
+
+    }
+
 
 }
 ?>

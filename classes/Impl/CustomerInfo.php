@@ -53,6 +53,26 @@ class CustomerInfo extends PaymentReq implements ICustomerInfo{
 		//echo "customer info enc:" . $customerInfoEnc;
 	 return $customerInfoEnc;
 	}
+	public function decryptCustomerInfo($package, $pass){
+		openssl_pkcs12_read($cert_store, $certs, $pass);
+		$res=$certs['pkey'];
+		$b64dec = base64_decode($package); 
+
+		openssl_private_decrypt($b64dec,$decrypted,$res);
+		echo "plain text ". $decrypted;
+
+	}
+	public function isPubKeyCertValid($pubcertStr){
+		$cert = openssl_x509_parse($pubcertStr);
+		$isValid = "True";
+		if( $cert['validFrom_time_t'] > time() || $cert['validTo_time_t'] < time() )
+			$isValid = "false";
+		
+	return $isValid;
+		
+		
+	
+	}
 }
 
 ?>

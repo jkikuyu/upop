@@ -53,10 +53,11 @@ class Purchase extends PaymentReq implements IPaymentType{
 		return $strData;
 	}
 	public function initiateRequest(array $reqData, $url, $port){
-		
 		$response = parent::curlPost($reqData, $url, $port);
-		//echo $response;
-	return $response;
+
+		return $response;
+
+
 
 		
 	}
