@@ -21,9 +21,6 @@ ini_set('display_startup_errors', TRUE);
 //$dataRecd = file_get_contents('php://input');
 $dataRecd='{"type":"1", "card":"6216261000000000018","orderId":"20191008132716", "txnAmt":"1", "txnTime":"20191008132716"}';
 $isRequestJson = (json_decode($dataRecd) != NULL) ? true : false;
-$logfile = Utils::getLogFile();
-$log = new Logger('Upop');
-$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
 
 if ($isRequestJson){
 
@@ -80,6 +77,7 @@ if ($isRequestJson){
 		$log->error("invalid JSON request");
 		new \Exception ("invalid JSON request");
 	}
+	
 	$custInfo = new CustomerInfo();
 	$card = $json->card;
 	$customerInfo = ["smsCode"=>  $upopconf->smsCode];
@@ -92,10 +90,10 @@ if ($isRequestJson){
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
 	$defaultContent = $upopconf->getDefaultContent();
+	print_r($defaultContent);
 	$defaultContent=array_merge($defaultContent,$customerData);
 	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
 	$requiredFlds = $upopconf->getRequiredFlds();
-	
 	$sort = ksort($merged);
 	//var_dump($merged);
 	$signature = $classobj->processRequest($merged, $requiredFlds);
@@ -110,10 +108,52 @@ if ($isRequestJson){
 
 	// $sorted = ksort($merged_final);
 	$port = $upopconf->port;
-	$classobj->initiateRequest($merged_final,$url,$port);
+
+	$data = $classobj->initiateRequest($merged_final,$url,$port);
+	$ares = explode("&",$data);
+	//Svar_dump($ares);
+	$resp="";
+	foreach( $ares as $item){
+		$temp = explode("=",$item);
+		$key=$temp[0];
+		$value=$temp[1];
+		$resp[$key] =  $value;
+
+	}
+
+	foreach($resp as $key => $value ){
+	   if (  $key==='signPubKeyCert'){
+		   $pubcertStr=$value;
+		   break;
+	   }
+	}
+	$validCert = $custInfo->isPubKeyCertValid($pubcertStr);
+	if (validCert){
+		$respCode = $resp['respCode'] ;
+		if ($respCode =='00'){
+			echo '{
+				"status":"200",
+				"description":"OK",
+				"respCode":"'.$respCode.'"
+
+			}';
+			
+		}
+		else{
+			echo '{
+				"status":"400",
+				"decription":"failed",
+				"respCode":"'.$respCode.'"
+				
+			}';
+		}
+		
+	}
+	else{
+		die("certificate not valid");
+	}
 	
 }
-
 else{
 	//Utils::logger(array("invalid JSON request"));
 	$log->error("invalid JSON request");

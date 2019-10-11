@@ -8,6 +8,11 @@ require_once(dirname(__dir__).'/classes/Interfaces/IPaymentReq.php');
 
 require_once(dirname(__dir__).'/utils/CertUtils.php');
 
+require_once(dirname(__dir__).'/utils/CertUtils.php');
+
+require_once(dirname(__dir__).'/utils/Utils.php');
+
+
 class PaymentReq implements IPaymentReq{
 /**	private $orderID;
 	private $txnTime;
@@ -132,6 +137,8 @@ return $html;
 
 			}
 			$strData = substr($strData,0,strlen($strData)-1);
+			Utils::infoMsg($strData);
+
 			echo "<br />string to send :<br />".$strData."<br/>";
 			echo "url :".$url;
 
@@ -159,37 +166,8 @@ return $html;
 			curl_setopt($curl, CURLOPT_VERBOSE, 1);
 
 			$output = curl_exec($curl);
+			Utils::infoMsg($output);
 
-			echo "result <br />".$output;
-
-
-			/**
-			 * CURL OPTIONS
-			 */
-			//set url
-/*
-			curl_setopt($curl, CURLOPT_URL, $url);
-
-			//set request headers
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-			//return transfer response as string to the $curl resource
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-			//follow any 'Location:' header the server sends
-			curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-			//output verbose info
-			curl_setopt($curl, CURLOPT_VERBOSE, true);
-
-			//request method is POST
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-
-			//request body
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $strData);
-
-			$output = curl_exec($curl);
-*/
 		}
 	return $output;
 
