@@ -64,11 +64,14 @@ final class Utils{
         $filepath = Utils::getLogFile();
         file_put_contents($filepath, $logs."\n", FILE_APPEND | LOCK_EX);
     }
-    public static function getLogFile(){
-		$dotenv = new Dotenv(__DIR__.'/../');
-		$dotenv->load();
-		$dirname = getenv('LOGDIR');
+    public static function getLogFile($tag="ipaySecure"){
+        $tagname = $tag;
+        $dotenv = new Dotenv(__DIR__.'/secure');
+        $dotenv->load();
+        $dirname = getenv('LOGDIR');
 
+       // echo "dir: ". $dirname;
+        
         if(!is_string($dirname)){
             throw new \InvalidArgumentException('dirname must be a string');
         }
@@ -89,9 +92,11 @@ final class Utils{
                 }
             }
             $dir = $save_dir;
+            $logFile = $dir."/".date("Y-m-d").'.log';
+            self::$log = new Logger($tag);
+            self::$log->pushHandler(new StreamHandler($logFile , Logger::INFO));
 
         }
-        return  $dir."/".date("Y-m-d").'.log';
     }
     public static function suddenDeath(){
         /**

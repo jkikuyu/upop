@@ -17,7 +17,7 @@ require_once('classesAutoload.php');
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
-
+Utils::getLogFile("upop");
 $dataRecd = file_get_contents('php://input');
 //$dataRecd='{"type":"1", "card":"6216261000000000018","orderId":"20191008132716", "txnAmt":"1", "txnTime":"20191008132716"}';
 $isRequestJson = (json_decode($dataRecd) != NULL) ? true : false;
