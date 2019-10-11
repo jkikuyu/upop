@@ -27,7 +27,7 @@ class CustomerInfo extends PaymentReq implements ICustomerInfo{
 		
 		$data=openssl_x509_parse($encryptCert,true);
 		$serialNo = $data['serialNumber'];
-		echo "encrypted cert id ". $serialNo;
+		//echo "encrypted cert id ". $serialNo;
 	return $serialNo;
 
 		

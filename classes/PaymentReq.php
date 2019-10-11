@@ -132,8 +132,8 @@ return $html;
 
 			}
 			$strData = substr($strData,0,strlen($strData)-1);
-			echo "<br />string to send :<br />".$strData."<br/>";
-			echo "url :".$url;
+			//echo "<br />string to send :<br />".$strData."<br/>";
+			//echo "url :".$url;
 
 			//init curl
 			$curl = curl_init();
@@ -160,7 +160,7 @@ return $html;
 
 			$output = curl_exec($curl);
 
-			echo "result <br />".$output;
+			//echo "result <br />".$output;
 
 
 			/**
