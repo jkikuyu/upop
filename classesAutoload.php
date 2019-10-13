@@ -30,7 +30,7 @@ if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
     }
 }
 
-require_once('../vendor/autoload.php');
+require_once('../../vendor/autoload.php');
 require_once('utils/Utils.php');
 require_once('conf/UpopConf.php');
 

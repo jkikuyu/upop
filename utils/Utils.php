@@ -64,7 +64,7 @@ final class Utils{
         $filepath = Utils::getLogFile();
         file_put_contents($filepath, $logs."\n", FILE_APPEND | LOCK_EX);
     }
-    public static function getLogFile($tag="ipaySecure"){
+    public static function getLogFile($tag="iPay"){
         $tagname = $tag;
         $dotenv = new Dotenv(__DIR__.'/secure');
         $dotenv->load();

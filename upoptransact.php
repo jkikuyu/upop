@@ -9,6 +9,7 @@
 
 namespace UnionPay;
 
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -90,7 +91,7 @@ if ($isRequestJson){
 	$class = __NAMESPACE__ . '\\' . $var;
 	$classobj = new $class;
 	$defaultContent = $upopconf->getDefaultContent();
-	print_r($defaultContent);
+	//print_r($defaultContent);
 	$defaultContent=array_merge($defaultContent,$customerData);
 	$merged = $classobj->mergeData($defaultContent, $json, $type = null);
 	$requiredFlds = $upopconf->getRequiredFlds();
@@ -128,7 +129,7 @@ if ($isRequestJson){
 	   }
 	}
 	$validCert = $custInfo->isPubKeyCertValid($pubcertStr);
-	if (validCert){
+	if ($validCert){
 		$respCode = $resp['respCode'] ;
 		if ($respCode =='00'){
 			echo '{
@@ -156,7 +157,7 @@ if ($isRequestJson){
 }
 else{
 	//Utils::logger(array("invalid JSON request"));
-	$log->error("invalid JSON request");
+	Utils::infoMsg("invalid JSON request");;
 	new \Exception ("invalid JSON request");
 
 }

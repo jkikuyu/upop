@@ -139,7 +139,7 @@ return $html;
 			$strData = substr($strData,0,strlen($strData)-1);
 			//echo "<br />string to send :<br />".$strData."<br/>";
 			//echo "url :".$url;
-			Utils::infoMsg($strData);
+			//Utils::infoMsg($strData);
 
 
 
@@ -167,7 +167,7 @@ return $html;
 			curl_setopt($curl, CURLOPT_VERBOSE, 1);
 
 			$output = curl_exec($curl);
-			Utils::infoMsg($output);
+			//Utils::infoMsg($output);
 
 
 		}

@@ -39,7 +39,6 @@ class UpopConf{
 
     
     public function __construct(){
-		echo "echo version:". getenv('UPOP.VERSION');
 		$this->version=getenv('UPOP.VERSION');
         $this->encoding=getenv('UPOP.ENCODING');
         $this->signMethod=getenv('UPOP.SIGNMETHOD');

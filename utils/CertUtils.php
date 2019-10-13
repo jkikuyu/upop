@@ -124,9 +124,11 @@ final class CertUtils{
         $middleCertPath=getenv('UPOP.MIDDLECERT.PATH');
         $rootCertPath=getenv('UPOP.ROOTCERT.PATH');
 		$alg = getenv('UPOP.ALG');
+/*
 		$logfile = Utils::getLogFile();
 		$log = new Logger('Upop');
 		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+*/
 		//echo "encrypt file". $encryptCert;
 
 	}
@@ -160,20 +162,22 @@ final class CertUtils{
         $signCertType=getenv('UPOP.SIGNCERT.TYPE');
         $signCertPwd=getenv('UPOP.SIGNCERT.PWD');
 
+/*
         $logfile = Utils::getLogFile();
 		$log = new Logger('Upop');
 		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+*/
 
         if ($signCertType =='PKCS12'){
 			  if ($cert_store = file_get_contents($signCertPath)) {
 
 
 					if (openssl_pkcs12_read($cert_store, self::$keystore, $signCertPwd)){
-					   $log->info("Signed Certicate loaded Successfully");
+					   //$log->info("Signed Certicate loaded Successfully");
 						$success=true;
 					}
 					else{
-						$log->info("unable to read file");
+						//$log->info("unable to read file");
 
 						throw new \Exception("Error: Unable to read file");
 
@@ -198,9 +202,11 @@ final class CertUtils{
 		/* Ensure raw data is encoded using UTF-8, apply hasing. IMPORTANT that resulting hash is encoded 
 		 * again using UTF-8
 		 */
+/*
         $logfile = Utils::getLogFile();
 		$log = new Logger('Upop');
 		$log->pushHandler(new StreamHandler($logfile , Logger::INFO));
+*/
 
 
 		$alg = getenv('UPOP.ALG');
