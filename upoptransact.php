@@ -78,10 +78,10 @@ if ($isRequestJson){
 		$log->error("invalid JSON request");
 		new \Exception ("invalid JSON request");
 	}
-	
 	$custInfo = new CustomerInfo();
 	$card = $json->card;
 	$customerInfo = ["smsCode"=>  $upopconf->smsCode];
+	
 	$encryptedCard = $custInfo->encryptCard($card);
 	$encryptedCertId = $custInfo->encryptedCertId();
 	$encryptedCustomerInfo =  $custInfo->encryptCustomerInfo($customerInfo,$json->card);
@@ -105,12 +105,13 @@ if ($isRequestJson){
 	//$certDetail = ["signature"=>$signature,"certId"=>$certID];
 	$certDetail = ["signature"=>$signature];
 	$merged_final= array_merge($merged,$certDetail);
-	//print_r($merged_final);
 
 	// $sorted = ksort($merged_final);
+	var_dump($merged_final);
 	$port = $upopconf->port;
 
 	$data = $classobj->initiateRequest($merged_final,$url,$port);
+	var_dump($data);
 	$ares = explode("&",$data);
 	//Svar_dump($ares);
 	$resp="";
@@ -121,38 +122,43 @@ if ($isRequestJson){
 		$resp[$key] =  $value;
 
 	}
-
+	
 	foreach($resp as $key => $value ){
 	   if (  $key==='signPubKeyCert'){
 		   $pubcertStr=$value;
 		   break;
 	   }
 	}
+	$respCode = $resp['respCode'] ;
+	$queryId= $resp['queryId']	;
+	if ($respCode =='00'){
 	$validCert = $custInfo->isPubKeyCertValid($pubcertStr);
 	if ($validCert){
-		$respCode = $resp['respCode'] ;
-		if ($respCode =='00'){
-			echo '{
-				"status":"200",
-				"description":"OK",
-				"respCode":"'.$respCode.'"
+		echo '{
+			"status":"200",
+			"description":"OK",
+			"queryId":"'.$queryId.'",
+			"respCode":"'.$respCode.'"
 
-			}';
-			
-		}
-		else{
-			echo '{
-				"status":"400",
-				"decription":"failed",
-				"respCode":"'.$respCode.'"
-				
-			}';
-		}
-		
+		}';
+
 	}
 	else{
 		die("certificate not valid");
 	}
+
+
+	}
+	else{
+		echo '{
+			"status":"400",
+			"decription":"failed",
+			"respCode":"'.$respCode.'"
+
+		}';
+	}
+
+
 	
 }
 else{

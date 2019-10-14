@@ -8,25 +8,24 @@
  */
 namespace UnionPay;
 use Dotenv\Dotenv;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+
 final class CertUtils{
     /** Path of signed certificate. */
-    public $signCertPath;
+    protected $signCertPath;
     /** Password of signed certificate. */
-    public $signCertPwd;
+    protected $signCertPwd;
     /** Type of signed certificate. */
-    public $signCertType;
+    protected $signCertType;
     /** Path of encrypted public key certificate. */
     //public $encryptCertPath;
     /** Authenticate the catalog of signed public key certificates. */
-    public $validateCertDir;
+    protected $validateCertDir;
     /** Read the catalog of specified signed certificates according to client codes. */
-    public $signCertDir;
+    protected $signCertDir;
     /** Security key (used in calculation of SHA256 and SM3) */
-    public $secureKey;
+    protected $secureKey;
 	/** algorithm for signing data**/
-	public $alg;
+	protected $alg;
     
 	private static $keystore = null;
 	/** Encryption public key and certificate for sensitive information */
