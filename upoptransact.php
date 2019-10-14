@@ -132,27 +132,27 @@ if ($isRequestJson){
 	$respCode = $resp['respCode'] ;
 	$queryId= $resp['queryId']	;
 	if ($respCode =='00'){
-	$validCert = $custInfo->isPubKeyCertValid($pubcertStr);
-	if ($validCert){
-		echo '{
-			"status":"200",
-			"description":"OK",
-			"queryId":"'.$queryId.'",
-			"respCode":"'.$respCode.'"
+		$validCert = $custInfo->isPubKeyCertValid($pubcertStr);
+		if ($validCert){
+			echo '{
+				"status":"200",
+				"description":"OK",
+				"queryId":"'.$queryId.'",
+				"respCode":"'.$respCode.'"
 
-		}';
+			}';
 
-	}
-	else{
-		die("certificate not valid");
-	}
+		}
+		else{
+			die("certificate not valid");
+		}
 
 
 	}
 	else{
 		echo '{
 			"status":"400",
-			"decription":"failed",
+			"description":"failed",
 			"respCode":"'.$respCode.'"
 
 		}';
@@ -163,6 +163,11 @@ if ($isRequestJson){
 }
 else{
 	//Utils::logger(array("invalid JSON request"));
+	echo '{
+			"status":"400",
+			"description":"Bad Request: Invalid JSON",
+
+	}'
 	Utils::infoMsg("invalid JSON request");;
 	new \Exception ("invalid JSON request");
 
